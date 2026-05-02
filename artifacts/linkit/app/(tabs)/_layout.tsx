@@ -3,7 +3,7 @@ import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Tabs } from "expo-router";
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { SymbolView } from "expo-symbols";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Platform, StyleSheet, View, useColorScheme } from "react-native";
 
@@ -14,19 +14,23 @@ function NativeTabLayout() {
     <NativeTabs>
       <NativeTabs.Trigger name="index">
         <Icon sf={{ default: "book", selected: "book.fill" }} />
-        <Label>일상</Label>
+        <Label>다이어리</Label>
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="share">
-        <Icon sf={{ default: "person.2", selected: "person.2.fill" }} />
-        <Label>교환일기</Label>
+      <NativeTabs.Trigger name="video">
+        <Icon sf={{ default: "video", selected: "video.fill" }} />
+        <Label>영상로그</Label>
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="daily">
+        <Icon sf={{ default: "book.pages", selected: "book.pages.fill" }} />
+        <Label>일상</Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="travel">
         <Icon sf={{ default: "airplane", selected: "airplane" }} />
-        <Label>여행</Label>
+        <Label>트레블</Label>
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="stats">
-        <Icon sf={{ default: "chart.bar", selected: "chart.bar.fill" }} />
-        <Label>인사이트</Label>
+      <NativeTabs.Trigger name="settings">
+        <Icon sf={{ default: "gearshape", selected: "gearshape.fill" }} />
+        <Label>설정</Label>
       </NativeTabs.Trigger>
     </NativeTabs>
   );
@@ -70,7 +74,7 @@ function ClassicTabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "일상",
+          title: "다이어리",
           tabBarIcon: ({ color, focused }) =>
             isIOS ? (
               <SymbolView name={focused ? "book.fill" : "book"} tintColor={color} size={24} />
@@ -80,21 +84,33 @@ function ClassicTabLayout() {
         }}
       />
       <Tabs.Screen
-        name="share"
+        name="video"
         options={{
-          title: "교환일기",
+          title: "영상로그",
           tabBarIcon: ({ color, focused }) =>
             isIOS ? (
-              <SymbolView name={focused ? "person.2.fill" : "person.2"} tintColor={color} size={24} />
+              <SymbolView name={focused ? "video.fill" : "video"} tintColor={color} size={24} />
             ) : (
-              <Ionicons name={focused ? "people" : "people-outline"} size={24} color={color} />
+              <Ionicons name={focused ? "videocam" : "videocam-outline"} size={24} color={color} />
+            ),
+        }}
+      />
+      <Tabs.Screen
+        name="daily"
+        options={{
+          title: "일상",
+          tabBarIcon: ({ color, focused }) =>
+            isIOS ? (
+              <SymbolView name={focused ? "book.pages.fill" : "book.pages"} tintColor={color} size={24} />
+            ) : (
+              <Ionicons name={focused ? "document-text" : "document-text-outline"} size={24} color={color} />
             ),
         }}
       />
       <Tabs.Screen
         name="travel"
         options={{
-          title: "여행",
+          title: "트레블",
           tabBarIcon: ({ color, focused }) =>
             isIOS ? (
               <SymbolView name="airplane" tintColor={color} size={24} />
@@ -104,14 +120,14 @@ function ClassicTabLayout() {
         }}
       />
       <Tabs.Screen
-        name="stats"
+        name="settings"
         options={{
-          title: "인사이트",
+          title: "설정",
           tabBarIcon: ({ color, focused }) =>
             isIOS ? (
-              <SymbolView name={focused ? "chart.bar.fill" : "chart.bar"} tintColor={color} size={24} />
+              <SymbolView name={focused ? "gearshape.fill" : "gearshape"} tintColor={color} size={24} />
             ) : (
-              <Ionicons name={focused ? "bar-chart" : "bar-chart-outline"} size={24} color={color} />
+              <Ionicons name={focused ? "settings" : "settings-outline"} size={24} color={color} />
             ),
         }}
       />
@@ -120,8 +136,6 @@ function ClassicTabLayout() {
 }
 
 export default function TabLayout() {
-  if (isLiquidGlassAvailable()) {
-    return <NativeTabLayout />;
-  }
+  if (isLiquidGlassAvailable()) return <NativeTabLayout />;
   return <ClassicTabLayout />;
 }

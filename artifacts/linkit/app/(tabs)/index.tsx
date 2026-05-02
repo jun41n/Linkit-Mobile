@@ -20,16 +20,16 @@ function groupByDate(records: UnifiedRecord[]) {
   return Object.entries(groups).map(([title, data]) => ({ title, data }));
 }
 
-export default function TimelineScreen() {
+export default function DiaryScreen() {
   const colors = useColors();
   const { records, loading, travelMode } = useRecords();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
-  const filtered = useMemo(() => records.filter((r) => r.type !== "TRAVEL"), [records]);
-  const sections = useMemo(() => groupByDate(filtered), [filtered]);
-  const shareCount = records.filter((r) => r.type === "SHARE").length;
+  const diaryRecords = useMemo(() => records.filter((r) => r.type === "DAILY" || r.type === "SHARE"), [records]);
+  const sections = useMemo(() => groupByDate(diaryRecords), [diaryRecords]);
   const dailyCount = records.filter((r) => r.type === "DAILY").length;
+  const shareCount = records.filter((r) => r.type === "SHARE").length;
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -38,7 +38,7 @@ export default function TimelineScreen() {
 
   if (loading) {
     return (
-      <View style={[styles.center, { backgroundColor: colors.background }]}> 
+      <View style={[styles.center, { backgroundColor: colors.background }]}>
         <ActivityIndicator color={colors.primary} size="large" />
       </View>
     );
@@ -46,32 +46,32 @@ export default function TimelineScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}> 
-      <LinkItHeader showTravelToggle />
+      <LinkItHeader />
 
       <View style={styles.hero}>
         <View style={[styles.heroBadge, { backgroundColor: colors.secondary }]}> 
           <Ionicons name="book-outline" size={14} color={colors.primary} />
-          <Text style={[styles.heroBadgeText, { color: colors.primary }]}>메인 기능: 일상 기록 + 교환일기</Text>
+          <Text style={[styles.heroBadgeText, { color: colors.primary }]}>메인 기능: 다이어리 + 교환일기</Text>
         </View>
-        <Text style={[styles.heroTitle, { color: colors.foreground }]}>세로그 기능이 중심입니다</Text>
-        <Text style={[styles.heroDesc, { color: colors.mutedForeground }]}>일상 기록을 기본으로, Tuda의 교환일기 흐름을 함께 제공합니다. 여행로그는 마지막에 들어가는 서브 기능입니다.</Text>
+        <Text style={[styles.heroTitle, { color: colors.foreground }]}>다이어리가 중심입니다</Text>
+        <Text style={[styles.heroDesc, { color: colors.mutedForeground }]}>세로그의 일상 기록과 Tuda의 교환일기를 메인으로 두고, 여행은 별도 탭에서 보조합니다.</Text>
         <View style={styles.heroStats}>
-          <View style={[styles.statPill, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={[styles.statPill, { backgroundColor: colors.card, borderColor: colors.border }]}> 
             <Text style={[styles.statValue, { color: colors.foreground }]}>{dailyCount}</Text>
             <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>일상</Text>
           </View>
-          <View style={[styles.statPill, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={[styles.statPill, { backgroundColor: colors.card, borderColor: colors.border }]}> 
             <Text style={[styles.statValue, { color: colors.foreground }]}>{shareCount}</Text>
             <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>교환일기</Text>
           </View>
         </View>
       </View>
 
-      {filtered.length === 0 ? (
+      {diaryRecords.length === 0 ? (
         <View style={styles.empty}>
           <Ionicons name="book-outline" size={52} color={colors.mutedForeground} />
           <Text style={[styles.emptyTitle, { color: colors.foreground }]}>기록이 없습니다</Text>
-          <Text style={[styles.emptyDesc, { color: colors.mutedForeground }]}>+ 버튼으로 일상 기록이나 교환일기를 시작하세요</Text>
+          <Text style={[styles.emptyDesc, { color: colors.mutedForeground }]}>+ 버튼으로 다이어리 또는 교환일기를 시작하세요</Text>
         </View>
       ) : (
         <SectionList
@@ -79,7 +79,7 @@ export default function TimelineScreen() {
           keyExtractor={(item) => item.id}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
           renderSectionHeader={({ section }) => (
-            <View style={[styles.sectionHeader, { backgroundColor: colors.background }]}>
+            <View style={[styles.sectionHeader, { backgroundColor: colors.background }]}> 
               <View style={[styles.sectionLine, { backgroundColor: colors.border }]} />
               <Text style={[styles.sectionTitle, { color: colors.mutedForeground }]}>{section.title}</Text>
               <View style={[styles.sectionLine, { backgroundColor: colors.border }]} />
@@ -91,9 +91,9 @@ export default function TimelineScreen() {
       )}
 
       {travelMode && (
-        <View style={[styles.travelNotice, { backgroundColor: colors.travelBackground, borderColor: colors.travelActive }]}>
+        <View style={[styles.travelNotice, { backgroundColor: colors.travelBackground, borderColor: colors.travelActive }]}> 
           <Ionicons name="airplane-outline" size={16} color={colors.travelActive} />
-          <Text style={[styles.travelNoticeText, { color: colors.travelActive }]}>여행 모드가 켜져 있어 새 기록은 여행 로그로도 저장됩니다</Text>
+          <Text style={[styles.travelNoticeText, { color: colors.travelActive }]}>여행 로그는 보조 탭에서 따로 볼 수 있습니다</Text>
         </View>
       )}
 
