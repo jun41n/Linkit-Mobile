@@ -1,75 +1,54 @@
 const colors = {
   light: {
-    text: "#1A1A2E",
-    tint: "#3B82F6",
+    text: "#2A2520",
+    tint: "#FF8FA3",
 
-    background: "#F8F9FF",
-    foreground: "#1A1A2E",
+    background: "#FBF6EC",
+    foreground: "#2A2520",
 
     card: "#FFFFFF",
-    cardForeground: "#1A1A2E",
+    cardForeground: "#2A2520",
 
-    primary: "#3B82F6",
+    primary: "#FF8FA3",
     primaryForeground: "#FFFFFF",
 
-    accent: "#F472B6",
-    accentForeground: "#FFFFFF",
+    accent: "#FFD86B",
+    accentForeground: "#2A2520",
 
-    secondary: "#EEF2FF",
-    secondaryForeground: "#3B82F6",
+    secondary: "#FFF1D6",
+    secondaryForeground: "#7A5A2C",
 
-    muted: "#F1F5F9",
-    mutedForeground: "#6B7280",
+    muted: "#F2EADA",
+    mutedForeground: "#8A7E6E",
 
-    destructive: "#EF4444",
+    destructive: "#E5634D",
     destructiveForeground: "#FFFFFF",
 
-    border: "#E2E8F0",
-    input: "#E2E8F0",
+    border: "#EADFC8",
+    input: "#EADFC8",
 
-    gradientStart: "#3B82F6",
-    gradientEnd: "#F472B6",
+    gradientStart: "#FFB7C5",
+    gradientEnd: "#FFD86B",
 
-    travelActive: "#10B981",
-    travelBackground: "#ECFDF5",
+    paperCream: "#FBF6EC",
+    paperWhite: "#FFFEF8",
+    inkBrown: "#5C4A36",
+    highlightYellow: "#FFE76A",
+    softMint: "#BDEBD8",
+    softPink: "#FFD3DA",
+    softLavender: "#E0D4F7",
+    softBlue: "#CFE6FB",
+    bookRed: "#F46A6A",
+    bookMint: "#7FD8B8",
+    bookYellow: "#FFD86B",
+    bookLavender: "#C9B6F2",
+    bookBlue: "#8FB8F0",
+    bookOrange: "#FFA76A",
+    proGold: "#E2A23B",
   },
-
-  dark: {
-    text: "#F1F5F9",
-    tint: "#60A5FA",
-
-    background: "#0F0F1A",
-    foreground: "#F1F5F9",
-
-    card: "#1A1A2E",
-    cardForeground: "#F1F5F9",
-
-    primary: "#60A5FA",
-    primaryForeground: "#0F0F1A",
-
-    accent: "#F9A8D4",
-    accentForeground: "#0F0F1A",
-
-    secondary: "#1E2040",
-    secondaryForeground: "#60A5FA",
-
-    muted: "#1E2040",
-    mutedForeground: "#94A3B8",
-
-    destructive: "#F87171",
-    destructiveForeground: "#0F0F1A",
-
-    border: "#2D3050",
-    input: "#2D3050",
-
-    gradientStart: "#60A5FA",
-    gradientEnd: "#F9A8D4",
-
-    travelActive: "#34D399",
-    travelBackground: "#064E3B",
-  },
-
-  radius: 16,
+  radius: 18,
 };
+
+export type AppColors = typeof colors.light & { radius: number };
 
 export default colors;
