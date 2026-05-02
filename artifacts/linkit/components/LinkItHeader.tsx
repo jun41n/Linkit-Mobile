@@ -19,14 +19,10 @@ export function LinkItHeader({ showTravelToggle = false }: LinkItHeaderProps) {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
 
   return (
-    <View style={[styles.container, { paddingTop: topPad + 8, backgroundColor: colors.background }]}>
+    <View style={[styles.container, { paddingTop: topPad + 8, backgroundColor: colors.background }]}> 
       <View style={styles.row}>
         <View style={styles.logoRow}>
-          <Image
-            source={require("../assets/images/icon.png")}
-            style={styles.logoImage}
-            resizeMode="contain"
-          />
+          <Image source={require("../assets/images/icon.png")} style={styles.logoImage} resizeMode="contain" />
           <View>
             <LinearGradient
               colors={[colors.gradientStart, colors.gradientEnd]}
@@ -42,14 +38,8 @@ export function LinkItHeader({ showTravelToggle = false }: LinkItHeaderProps) {
 
         {showTravelToggle && (
           <View style={styles.travelToggle}>
-            <Ionicons
-              name="airplane"
-              size={16}
-              color={travelMode ? colors.travelActive : colors.mutedForeground}
-            />
-            <Text style={[styles.travelLabel, { color: travelMode ? colors.travelActive : colors.mutedForeground }]}>
-              여행
-            </Text>
+            <Ionicons name="airplane" size={16} color={travelMode ? colors.travelActive : colors.mutedForeground} />
+            <Text style={[styles.travelLabel, { color: travelMode ? colors.travelActive : colors.mutedForeground }]}>여행</Text>
             <Switch
               value={travelMode}
               onValueChange={setTravelMode}

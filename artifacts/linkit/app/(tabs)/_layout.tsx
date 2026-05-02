@@ -14,7 +14,11 @@ function NativeTabLayout() {
     <NativeTabs>
       <NativeTabs.Trigger name="index">
         <Icon sf={{ default: "book", selected: "book.fill" }} />
-        <Label>타임라인</Label>
+        <Label>일상</Label>
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="share">
+        <Icon sf={{ default: "person.2", selected: "person.2.fill" }} />
+        <Label>교환일기</Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="travel">
         <Icon sf={{ default: "airplane", selected: "airplane" }} />
@@ -53,11 +57,7 @@ function ClassicTabLayout() {
         },
         tabBarBackground: () =>
           isIOS ? (
-            <BlurView
-              intensity={100}
-              tint={isDark ? "dark" : "light"}
-              style={StyleSheet.absoluteFill}
-            />
+            <BlurView intensity={100} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
           ) : (
             <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.card }]} />
           ),
@@ -70,12 +70,24 @@ function ClassicTabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "타임라인",
+          title: "일상",
           tabBarIcon: ({ color, focused }) =>
             isIOS ? (
               <SymbolView name={focused ? "book.fill" : "book"} tintColor={color} size={24} />
             ) : (
               <Ionicons name={focused ? "book" : "book-outline"} size={24} color={color} />
+            ),
+        }}
+      />
+      <Tabs.Screen
+        name="share"
+        options={{
+          title: "교환일기",
+          tabBarIcon: ({ color, focused }) =>
+            isIOS ? (
+              <SymbolView name={focused ? "person.2.fill" : "person.2"} tintColor={color} size={24} />
+            ) : (
+              <Ionicons name={focused ? "people" : "people-outline"} size={24} color={color} />
             ),
         }}
       />

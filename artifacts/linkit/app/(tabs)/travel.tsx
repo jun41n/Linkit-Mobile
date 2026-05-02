@@ -1,24 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import * as Location from "expo-location";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  Text,
-  View,
-} from "react-native";
+import React, { useMemo, useState } from "react";
+import { Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { NewRecordSheet } from "@/components/NewRecordSheet";
 import { TimelineCard } from "@/components/TimelineCard";
-import { UnifiedRecord, useRecords } from "@/context/RecordsContext";
+import { useRecords } from "@/context/RecordsContext";
 import { useColors } from "@/hooks/useColors";
 
 function StatCard({ icon, label, value, color }: { icon: string; label: string; value: string; color: string }) {
@@ -42,20 +31,13 @@ export default function TravelScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const travelRecords = useMemo(() => records.filter((r) => r.type === "TRAVEL"), [records]);
-
-  const totalExpense = useMemo(() => {
-    return travelRecords.reduce((sum, r) => sum + (r.expense?.amount || 0), 0);
-  }, [travelRecords]);
-
-  const locationSet = useMemo(() => {
-    const names = travelRecords.map((r) => r.location?.name).filter(Boolean);
-    return [...new Set(names)];
-  }, [travelRecords]);
+  const totalExpense = useMemo(() => travelRecords.reduce((sum, r) => sum + (r.expense?.amount || 0), 0), [travelRecords]);
+  const locationSet = useMemo(() => [...new Set(travelRecords.map((r) => r.location?.name).filter(Boolean))], [travelRecords]);
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <Text style={[styles.headerTitle, { color: colors.foreground }]}>여행 모드</Text>
+    <View style={[styles.container, { backgroundColor: colors.background }]}> 
+      <View style={[styles.header, { paddingTop: topPad + 8 }]}> 
+        <Text style={[styles.headerTitle, { color: colors.foreground }]}>여행 로그</Text>
         <View style={styles.toggleRow}>
           <Ionicons name="airplane" size={16} color={travelMode ? colors.travelActive : colors.mutedForeground} />
           <Switch
@@ -70,25 +52,15 @@ export default function TravelScreen() {
         </View>
       </View>
 
-      {travelMode && (
-        <LinearGradient
-          colors={[colors.travelActive + "20", colors.primary + "10"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.activeBanner}
-        >
-          <Ionicons name="radio-button-on" size={12} color={colors.travelActive} />
-          <Text style={[styles.activeBannerText, { color: colors.travelActive }]}>여행 모드 활성화 — 새 기록이 자동으로 여행 기록으로 저장됩니다</Text>
-        </LinearGradient>
-      )}
+      <LinearGradient colors={[colors.travelActive + "18", colors.primary + "10"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.banner}>
+        <Ionicons name="compass-outline" size={14} color={colors.travelActive} />
+        <Text style={[styles.bannerText, { color: colors.travelActive }]}>여행은 서브 기능입니다. 일상/교환일기가 중심이고, 여행은 별도 로그로 보조합니다.</Text>
+      </LinearGradient>
 
-      <ScrollView
-        contentContainerStyle={[styles.scrollContent, { paddingBottom: bottomPad + 100 }]}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView contentContainerStyle={[styles.scrollContent, { paddingBottom: bottomPad + 100 }]} showsVerticalScrollIndicator={false}>
         <View style={styles.statsRow}>
           <StatCard icon="location-outline" label="방문 지역" value={`${locationSet.length}곳`} color={colors.primary} />
-          <StatCard icon="camera-outline" label="사진 기록" value={`${travelRecords.filter(r => r.photoUri).length}장`} color={colors.accent} />
+          <StatCard icon="camera-outline" label="사진 기록" value={`${travelRecords.filter((r) => r.photoUri).length}장`} color={colors.accent} />
           <StatCard icon="wallet-outline" label="총 지출" value={totalExpense > 0 ? `${totalExpense.toLocaleString()}` : "-"} color={colors.travelActive} />
         </View>
 
@@ -97,7 +69,7 @@ export default function TravelScreen() {
             <Text style={[styles.sectionTitle, { color: colors.mutedForeground }]}>방문 지역</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.locationChips}>
               {locationSet.map((name, i) => (
-                <View key={i} style={[styles.locationChip, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <View key={i} style={[styles.locationChip, { backgroundColor: colors.card, borderColor: colors.border }]}> 
                   <Ionicons name="location" size={12} color={colors.primary} />
                   <Text style={[styles.locationChipText, { color: colors.foreground }]}>{name}</Text>
                 </View>
@@ -117,9 +89,7 @@ export default function TravelScreen() {
           <View style={styles.empty}>
             <Ionicons name="airplane-outline" size={52} color={colors.mutedForeground} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>여행 기록이 없습니다</Text>
-            <Text style={[styles.emptyDesc, { color: colors.mutedForeground }]}>
-              여행 모드를 켜고 첫 여행 기록을 남겨보세요
-            </Text>
+            <Text style={[styles.emptyDesc, { color: colors.mutedForeground }]}>여행 모드는 보조 기능입니다. 필요한 경우만 사용하세요.</Text>
           </View>
         )}
       </ScrollView>
@@ -131,12 +101,7 @@ export default function TravelScreen() {
         }}
         style={[styles.fab, { bottom: bottomPad + 100 }]}
       >
-        <LinearGradient
-          colors={[colors.travelActive, colors.primary]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.fabGradient}
-        >
+        <LinearGradient colors={[colors.travelActive, colors.primary]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.fabGradient}>
           <Ionicons name="add" size={28} color="#fff" />
         </LinearGradient>
       </Pressable>
@@ -164,16 +129,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
   },
-  activeBanner: {
+  banner: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
     marginHorizontal: 20,
     padding: 12,
-    borderRadius: 12,
+    borderRadius: 14,
     marginBottom: 8,
   },
-  activeBannerText: {
+  bannerText: {
     fontSize: 12,
     fontFamily: "Inter_500Medium",
     flex: 1,

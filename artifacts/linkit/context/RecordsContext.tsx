@@ -5,7 +5,7 @@ export interface UnifiedRecord {
   id: string;
   dateTime: string;
   content?: string;
-  type: "DAILY" | "TRAVEL";
+  type: "DAILY" | "SHARE" | "TRAVEL";
   isShared: boolean;
   moodTag?: string;
   expense?: { amount: number; currency: string };
@@ -17,7 +17,7 @@ export interface UnifiedRecord {
 interface RecordsContextType {
   records: UnifiedRecord[];
   travelMode: boolean;
-  setTravelMode: (val: boolean) => void;
+  setTravelMode: (val: boolean) => Promise<void>;
   addRecord: (record: Omit<UnifiedRecord, "id">) => Promise<void>;
   updateRecord: (id: string, updates: Partial<UnifiedRecord>) => Promise<void>;
   deleteRecord: (id: string) => Promise<void>;
