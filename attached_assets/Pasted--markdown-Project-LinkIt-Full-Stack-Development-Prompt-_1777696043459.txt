@@ -1,0 +1,76 @@
+```markdown
+# [Project: LinkIt (링킷)] Full-Stack Development Prompt for Replit Agent
+
+Below is a single, comprehensive prompt designed to provide the Replit Agent with everything it needs—logo assets, conceptual understanding, project background, and a structured development roadmap—to build the MVP for 'LinkIt'. Copy the entire block below and paste it directly into your Replit Agent chat.
+
+---
+
+[Paste the following into Replit Agent]
+
+I am starting a new project called **LinkIt (링킷)**. This is a full-stack Flutter and Firebase mobile application. You are my lead engineer responsible for scaffolding the MVP and implementing core features.
+
+Here is the complete context and asset package:
+
+### 1. Project Background (Why we are building this)
+The current landscape of digital journaling and logging is fragmented. People use platforms like **Setlog** for structured, data-driven logging (time, location, metrics) but find them emotionally sterile. Conversely, apps like **Tuda** offer beautiful, customizable, emotional journaling but lack structure, data tracking, and analytical depth.
+
+We also identified a missed opportunity in the market for **Travel Logging**. Current solutions are often disconnected from daily journaling and focus either entirely on photos or entirely on text.
+
+**LinkIt** was born to bridge these gaps. We aim to merge structure (Setlog) with emotion (Tuda) into a single, cohesive 'Hybrid Timeline.'
+
+### 2. Branding & Assets (Who we are)
+*   **App Name:** LinkIt (링킷)
+*   **Brand Value:** Link (Connection) + It (The memory/data): "Linking friends, memories, and structured data in one place."
+*   **Visual Identity:** Modern, clean, warm, and intuitive.
+*   **Key Asset (LOGO):** I have uploaded a file named `logo.png` (image_0.png) to the project root. This is our brand identity.
+    *   **Description of logo (image_0.png):** The logo features an interconnected gradient loop (Link Blue #3B82F6 to Warm Pink #F472B6) forming a stylized 'L', 'i', and a heart, representing the fusion of connection, data, and emotion.
+
+### 3. Core Concept (What we are building)
+The defining feature of LinkIt is the **Hybrid Timeline**. Users do not just write journal entries; they create 'Unified Records.'
+
+*   **Setlog Aspect (Data):** Quick logging of time, location, expenses, and customizable metrics (e.g., 'Coffee count', 'Running dist').
+*   **Tuda Aspect (Emotion):** Instant emotional tagging (mood icons), customizable stickers, photos, and expressive journaling associated with those specific data points.
+*   **Travel Aspect:** A dedicated "Travel Mode" that leverages GPS to automatically log location, aggregate expenses, and generate an emotional travel map.
+
+### 4. Technical Constraints & Requirements
+*   **Tech Stack:** Flutter (Frontend), Firebase (Auth, Firestore, Storage)
+*   **State Management:** Riverpod or Provider (strongly preferred)
+*   **Resolution:** Design for **4K high-resolution displays**. Layouts must be responsive and scalable.
+*   **Optimization:** Implement proper image caching for performance.
+
+---
+
+### **[ACTUAL PROJECT TASK: SCROLL & IMPLEMENT MVP]**
+
+Based on all the context above, I need you to execute the following initialization and coding steps immediately:
+
+#### PHASE 1: Project Initialization & Theme
+1.  Initialize a standard Flutter project structure.
+2.  Set up Firebase integration (Auth, Firestore, Storage).
+3.  Implement a `linkit_theme.dart` file using the brand colors derived from `logo.png` (image_0.png): Link Blue (#3B82F6) and Warm Pink (#F472B6). Ensure this theme supports responsive UI (use `flutter_screenutil`).
+
+#### PHASE 2: Backend Architecture (Firestore Schema)
+Design a shared, hybrid data model named `UnifiedRecord`. The structure in Firestore should look roughly like this:
+*   `unified_records` (Collection)
+    *   `dateTime` (Timestamp)
+    *   `content` (String, optional)
+    *   `type` (Enum: DAILY / TRAVEL)
+    *   `userId` (String, indexed)
+    *   `isShared` (Boolean)
+    *   `metadata` (Map, optional)
+        *   `expense`: { `amount`: int, `currency`: string }
+        *   `moodTag`: string (mood icon identifier)
+        *   `location`: { `geoPoint`: GeoPoint, `name`: string }
+        *   `photoUrl`: string (if applicable)
+
+#### PHASE 3: Frontend Implementation (Core Features)
+1.  **Hybrid Input Screen:** Build a UI where a user can enter data (e.g., spent 5,000 KRW), select a location, add a photo, and write a caption/emotion in a single seamless flow.
+2.  **Hybrid Timeline Screen:** The main screen. Implement a clean, vertical timeline UI where 'Log data' (Setlog) and 'Emotional Entries/Photos' (Tuda) are integrated side-by-side on a central axis.
+3.  **Travel Mode:** Implement a top-level toggle. When 'Travel Mode' is ON:
+    *   Automatically fetch and display current GPS location for new entries.
+    *   Activate the expense tracking metadata input field.
+    *   Create a simple placeholder Map View (`google_maps_flutter`) that shows travel paths based on log locations.
+
+**Start with the project file structure and the hybrid data model `UnifiedRecord`. Show me the code.**
+
+```
