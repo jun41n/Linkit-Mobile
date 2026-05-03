@@ -1,16 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform, StyleSheet, View, useColorScheme } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 
+import { GlassSurface } from "@/components/GlassSurface";
 import { useColors } from "@/hooks/useColors";
 
 export default function TabLayout() {
   const colors = useColors();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
-  const isIOS = Platform.OS === "ios";
   const isWeb = Platform.OS === "web";
 
   return (
@@ -22,41 +19,24 @@ export default function TabLayout() {
         tabBarShowLabel: false,
         tabBarStyle: {
           position: "absolute",
-          backgroundColor: isIOS ? "transparent" : (isWeb ? "rgba(255,255,255,0.78)" : colors.card),
+          backgroundColor: "transparent",
           borderTopWidth: 0,
           elevation: 0,
           height: isWeb ? 84 : 80,
           paddingBottom: isWeb ? 30 : 22,
           paddingTop: 12,
         },
-        tabBarBackground: () =>
-          isIOS ? (
-            <View style={StyleSheet.absoluteFill}>
-              <BlurView
-                intensity={95}
-                tint={isDark ? "dark" : "systemUltraThinMaterialLight" as any}
-                style={StyleSheet.absoluteFill}
-              />
-              <View
-                style={[
-                  StyleSheet.absoluteFill,
-                  { backgroundColor: isDark ? "rgba(20,18,16,0.18)" : "rgba(255,255,255,0.18)" },
-                ]}
-              />
-              <View
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: 1,
-                  backgroundColor: isDark ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.65)",
-                }}
-              />
-            </View>
-          ) : (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: isWeb ? "rgba(255,255,255,0.78)" : colors.card, borderTopWidth: 1, borderTopColor: colors.border }]} />
-          ),
+        tabBarBackground: () => (
+          <GlassSurface
+            intensity={95}
+            borderRadius={0}
+            variant="bar"
+            noShadow
+            style={StyleSheet.absoluteFill as any}
+          >
+            <View style={{ width: "100%", height: "100%" }} />
+          </GlassSurface>
+        ),
       }}
     >
       <Tabs.Screen

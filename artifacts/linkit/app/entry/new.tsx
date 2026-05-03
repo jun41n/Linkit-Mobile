@@ -17,6 +17,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { GlassSurface } from "@/components/GlassSurface";
 import { StickerCanvas } from "@/components/StickerCanvas";
 import { StickerDrawer } from "@/components/StickerDrawer";
 import { DIARY_FONTS, DEFAULT_DIARY_FONT, getFontFamily } from "@/constants/fonts";
@@ -221,15 +222,19 @@ export default function NewEntryScreen() {
       <Stack.Screen options={{ headerShown: false }} />
 
       <View style={styles.header}>
-        <Pressable onPress={() => router.back()} style={[styles.headerBtn, { borderColor: colors.border }]}>
-          <Ionicons name="close" size={20} color={colors.foreground} />
-        </Pressable>
-        <View style={[styles.diaryChip, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <Ionicons name="book-outline" size={14} color={colors.mutedForeground} />
-          <Text style={[styles.diaryChipText, { color: colors.foreground }]} numberOfLines={1}>
-            {selectedDiary?.name ?? "다이어리 선택"}
-          </Text>
-        </View>
+        <GlassSurface variant="pill" tone="neutral" style={{ width: 40, height: 40 }}>
+          <Pressable onPress={() => router.back()} style={styles.headerBtnInner}>
+            <Ionicons name="close" size={20} color={colors.foreground} />
+          </Pressable>
+        </GlassSurface>
+        <GlassSurface variant="pill" tone="warm" style={{ flex: 1 }}>
+          <View style={styles.diaryChipInner}>
+            <Ionicons name="book-outline" size={14} color={colors.mutedForeground} />
+            <Text style={[styles.diaryChipText, { color: colors.foreground }]} numberOfLines={1}>
+              {selectedDiary?.name ?? "다이어리 선택"}
+            </Text>
+          </View>
+        </GlassSurface>
         <Pressable onPress={save} style={[styles.headerBtn, styles.saveBtn, { backgroundColor: colors.foreground }]}>
           <Text style={{ color: colors.background, fontFamily: "NotoSansKR_700Bold", fontSize: 14 }}>저장</Text>
         </Pressable>
@@ -261,7 +266,7 @@ export default function NewEntryScreen() {
           </View>
 
           {selectedPhoto && (
-            <View style={[styles.frameBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <GlassSurface variant="card" tone="cool" borderRadius={16} style={styles.frameBar}>
               <Text style={[styles.frameBarTitle, { color: colors.mutedForeground }]}>사진 프레임</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.frameRow}>
                 {FRAMES.map((f) => {
@@ -295,11 +300,11 @@ export default function NewEntryScreen() {
               <Text style={[styles.frameHint, { color: colors.mutedForeground }]}>
                 두 손가락으로 크기·회전 · 한 손가락으로 이동
               </Text>
-            </View>
+            </GlassSurface>
           )}
 
           {activeTool === "photo" && (
-            <View style={[styles.writeBox, { backgroundColor: colors.card, borderColor: colors.border, gap: 12 }]}>
+            <GlassSurface variant="card" tone="warm" borderRadius={16} style={[styles.writeBox, { gap: 12 }]}>
               <View style={styles.fontSectionRow}>
                 <Ionicons name="images-outline" size={14} color={colors.mutedForeground} />
                 <Text style={[styles.fontSectionLabel, { color: colors.mutedForeground }]}>사진 ({photos.length}/10)</Text>
@@ -319,11 +324,11 @@ export default function NewEntryScreen() {
               <Text style={[styles.frameHint, { color: colors.mutedForeground }]}>
                 사진을 누르면 프레임을 바꿀 수 있어요. 폴라로이드/스티커컷/원형 등 진짜 다꾸 느낌으로 꾸며보세요.
               </Text>
-            </View>
+            </GlassSurface>
           )}
 
           {activeTool === "write" && (
-            <View style={[styles.writeBox, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <GlassSurface variant="card" tone="warm" borderRadius={16} style={styles.writeBox}>
               <View style={styles.fontSectionRow}>
                 <Ionicons name="text" size={14} color={colors.mutedForeground} />
                 <Text style={[styles.fontSectionLabel, { color: colors.mutedForeground }]}>일기 본문 폰트</Text>
@@ -428,11 +433,11 @@ export default function NewEntryScreen() {
                   />
                 ))}
               </View>
-            </View>
+            </GlassSurface>
           )}
 
           {activeTool === "bg" && (
-            <View style={[styles.bgBox, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <GlassSurface variant="card" tone="cool" borderRadius={16} style={styles.bgBox}>
               <Text style={[styles.boxLabel, { color: colors.foreground }]}>페이지 배경</Text>
               <View style={styles.colorRowLg}>
                 {BG_COLORS.map((c) => (
@@ -443,7 +448,7 @@ export default function NewEntryScreen() {
                   />
                 ))}
               </View>
-            </View>
+            </GlassSurface>
           )}
 
           {diaries.length > 1 && (
@@ -466,21 +471,23 @@ export default function NewEntryScreen() {
           <StickerDrawer onPick={addSticker} height={300} />
         )}
 
-        <View style={[styles.toolbar, { backgroundColor: colors.card, borderTopColor: colors.border }]}>
-          {tools.map((t) => {
-            const active = activeTool === t.key;
-            return (
-              <Pressable
-                key={t.key}
-                onPress={() => setActiveTool(t.key)}
-                style={[styles.toolBtn, active && { backgroundColor: colors.secondary }]}
-              >
-                <Ionicons name={t.icon} size={20} color={active ? colors.primary : colors.foreground} />
-                <Text style={[styles.toolLabel, { color: active ? colors.primary : colors.foreground }]}>{t.label}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
+        <GlassSurface variant="bar" tone="warm" borderRadius={0} noShadow>
+          <View style={styles.toolbar}>
+            {tools.map((t) => {
+              const active = activeTool === t.key;
+              return (
+                <Pressable
+                  key={t.key}
+                  onPress={() => setActiveTool(t.key)}
+                  style={[styles.toolBtn, active && { backgroundColor: "rgba(255,255,255,0.6)" }]}
+                >
+                  <Ionicons name={t.icon} size={20} color={active ? colors.primary : colors.foreground} />
+                  <Text style={[styles.toolLabel, { color: active ? colors.primary : colors.foreground }]}>{t.label}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </GlassSurface>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -499,20 +506,17 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
-  saveBtn: { borderWidth: 0, paddingHorizontal: 16, width: undefined },
-  diaryChip: {
-    flex: 1,
+  headerBtnInner: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
+  saveBtn: { paddingHorizontal: 16, width: undefined },
+  diaryChipInner: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
     paddingHorizontal: 14,
     paddingVertical: 10,
-    borderRadius: 999,
-    borderWidth: 1,
     justifyContent: "center",
   },
   diaryChipText: { fontFamily: "NotoSansKR_700Bold", fontSize: 14, maxWidth: 200 },
@@ -529,7 +533,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   actionText: { fontFamily: "NotoSansKR_500Medium", fontSize: 13 },
-  frameBar: { borderRadius: 16, borderWidth: 1, padding: 12, gap: 8 },
+  frameBar: { padding: 12, gap: 8 },
   frameBarTitle: { fontFamily: "NotoSansKR_500Medium", fontSize: 11, letterSpacing: 0.3 },
   frameRow: { gap: 8, paddingVertical: 4 },
   frameChip: {
@@ -542,7 +546,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   frameHint: { fontFamily: "NotoSansKR_400Regular", fontSize: 11 },
-  writeBox: { borderRadius: 16, borderWidth: 1, padding: 14, gap: 10 },
+  writeBox: { padding: 14, gap: 10 },
   writeInput: { minHeight: 90, fontSize: 16, lineHeight: 24, textAlignVertical: "top" },
   dividerH: { height: 1, marginVertical: 4 },
   fontSectionRow: { flexDirection: "row", alignItems: "center", gap: 6 },
@@ -561,7 +565,7 @@ const styles = StyleSheet.create({
   textAddBtn: { width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" },
   colorChipRow: { flexDirection: "row", gap: 8 },
   colorChipSm: { width: 22, height: 22, borderRadius: 11, borderWidth: 2 },
-  bgBox: { borderRadius: 16, borderWidth: 1, padding: 14, gap: 10 },
+  bgBox: { padding: 14, gap: 10 },
   boxLabel: { fontFamily: "NotoSansKR_700Bold", fontSize: 15 },
   colorRowLg: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   colorChipLg: { width: 40, height: 40, borderRadius: 12, borderWidth: 2 },
@@ -570,7 +574,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     gap: 8,
-    borderTopWidth: 1,
   },
   toolBtn: {
     flex: 1,

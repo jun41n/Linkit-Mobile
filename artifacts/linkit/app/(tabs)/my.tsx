@@ -4,6 +4,7 @@ import React from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { GlassSurface } from "@/components/GlassSurface";
 import { useDiaries } from "@/context/DiariesContext";
 import { useStickers } from "@/context/StickersContext";
 import { useColors } from "@/hooks/useColors";
@@ -66,18 +67,24 @@ export default function MyScreen() {
         </View>
 
         <View style={styles.statsRow}>
-          <View style={[styles.statBox, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Text style={[styles.statNum, { color: colors.foreground }]}>{diaries.length}</Text>
-            <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>다이어리</Text>
-          </View>
-          <View style={[styles.statBox, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Text style={[styles.statNum, { color: colors.foreground }]}>{entries.length}</Text>
-            <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>일기</Text>
-          </View>
-          <View style={[styles.statBox, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Text style={[styles.statNum, { color: colors.foreground }]}>{ownedCount}</Text>
-            <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>스티커팩</Text>
-          </View>
+          <GlassSurface variant="card" tone="warm" borderRadius={14} style={styles.statBox}>
+            <View style={styles.statBoxInner}>
+              <Text style={[styles.statNum, { color: colors.foreground }]}>{diaries.length}</Text>
+              <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>다이어리</Text>
+            </View>
+          </GlassSurface>
+          <GlassSurface variant="card" tone="pink" borderRadius={14} style={styles.statBox}>
+            <View style={styles.statBoxInner}>
+              <Text style={[styles.statNum, { color: colors.foreground }]}>{entries.length}</Text>
+              <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>일기</Text>
+            </View>
+          </GlassSurface>
+          <GlassSurface variant="card" tone="cool" borderRadius={14} style={styles.statBox}>
+            <View style={styles.statBoxInner}>
+              <Text style={[styles.statNum, { color: colors.foreground }]}>{ownedCount}</Text>
+              <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>스티커팩</Text>
+            </View>
+          </GlassSurface>
         </View>
 
         <View style={[styles.sectionHeader, { backgroundColor: colors.secondary }]}>
@@ -173,9 +180,9 @@ const styles = StyleSheet.create({
   statsRow: { flexDirection: "row", gap: 10, paddingHorizontal: 22, paddingVertical: 12 },
   statBox: {
     flex: 1,
+  },
+  statBoxInner: {
     paddingVertical: 14,
-    borderRadius: 14,
-    borderWidth: 1,
     alignItems: "center",
   },
   statNum: { fontFamily: "Inter_700Bold", fontSize: 22 },

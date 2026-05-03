@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { DiaryBookCover } from "@/components/DiaryBookCover";
+import { GlassSurface } from "@/components/GlassSurface";
 import { DiaryKind, useDiaries } from "@/context/DiariesContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -59,26 +60,31 @@ export default function BookshelfScreen() {
             <Text style={[styles.smile, { color: colors.foreground }]}>:)</Text>
           </View>
         </View>
-        <Pressable
-          onPress={() => setEditing((v) => !v)}
-          style={[styles.editBtn, { borderColor: colors.border, backgroundColor: editing ? colors.foreground : colors.card }]}
-        >
-          <Text style={{ color: editing ? colors.card : colors.foreground, fontFamily: "NotoSansKR_700Bold", fontSize: 14 }}>
-            {editing ? "완료" : "편집"}
-          </Text>
-        </Pressable>
+        {editing ? (
+          <Pressable onPress={() => setEditing(false)} style={[styles.editBtn, { backgroundColor: colors.foreground }]}>
+            <Text style={{ color: colors.card, fontFamily: "NotoSansKR_700Bold", fontSize: 14 }}>완료</Text>
+          </Pressable>
+        ) : (
+          <GlassSurface variant="pill" tone="warm" style={styles.editBtnGlass}>
+            <Pressable onPress={() => setEditing(true)} style={styles.editBtnInner}>
+              <Text style={{ color: colors.foreground, fontFamily: "NotoSansKR_700Bold", fontSize: 14 }}>편집</Text>
+            </Pressable>
+          </GlassSurface>
+        )}
       </View>
 
-      <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <TextInput
-          value={search}
-          onChangeText={setSearch}
-          placeholder="다이어리 이름 검색"
-          placeholderTextColor={colors.mutedForeground}
-          style={[styles.searchInput, { color: colors.foreground }]}
-        />
-        <Ionicons name="search" size={18} color={colors.mutedForeground} />
-      </View>
+      <GlassSurface variant="pill" tone="warm" style={styles.searchBar}>
+        <View style={styles.searchBarInner}>
+          <TextInput
+            value={search}
+            onChangeText={setSearch}
+            placeholder="다이어리 이름 검색"
+            placeholderTextColor={colors.mutedForeground}
+            style={[styles.searchInput, { color: colors.foreground }]}
+          />
+          <Ionicons name="search" size={18} color={colors.mutedForeground} />
+        </View>
+      </GlassSurface>
 
       <View style={styles.tabsRow}>
         {TABS.map((t) => {
@@ -135,20 +141,18 @@ export default function BookshelfScreen() {
         )}
       </ScrollView>
 
-      <Pressable
-        onPress={() => router.push("/diary/new")}
-        style={[styles.fab, { backgroundColor: colors.card, borderColor: colors.border }]}
-      >
-        <Ionicons name="add" size={24} color={colors.foreground} />
-      </Pressable>
+      <GlassSurface variant="card" tone="warm" style={styles.fab} borderRadius={16}>
+        <Pressable onPress={() => router.push("/diary/new")} style={styles.fabInner}>
+          <Ionicons name="add" size={24} color={colors.foreground} />
+        </Pressable>
+      </GlassSurface>
 
-      <Pressable
-        onPress={() => router.push("/store")}
-        style={[styles.storeFab, { backgroundColor: colors.primary }]}
-      >
-        <Ionicons name="pricetag" size={16} color="white" />
-        <Text style={styles.storeFabText}>스티커샵</Text>
-      </Pressable>
+      <GlassSurface variant="pill" tone="pink" style={styles.storeFab}>
+        <Pressable onPress={() => router.push("/store")} style={styles.storeFabInner}>
+          <Ionicons name="pricetag" size={16} color={colors.primary} />
+          <Text style={[styles.storeFabText, { color: colors.primary }]}>스티커샵</Text>
+        </Pressable>
+      </GlassSurface>
     </SafeAreaView>
   );
 }
@@ -179,17 +183,18 @@ const styles = StyleSheet.create({
   smile: { fontSize: 26, fontFamily: "NotoSansKR_700Bold", marginLeft: 6, marginBottom: 6 },
   editBtn: {
     paddingHorizontal: 14,
-    paddingVertical: 6,
+    paddingVertical: 8,
     borderRadius: 999,
-    borderWidth: 1,
   },
+  editBtnGlass: { alignSelf: "center" },
+  editBtnInner: { paddingHorizontal: 14, paddingVertical: 8 },
   searchBar: {
     marginHorizontal: 22,
     marginTop: 8,
+  },
+  searchBarInner: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderRadius: 999,
-    borderWidth: 1,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -244,29 +249,19 @@ const styles = StyleSheet.create({
     right: 22,
     width: 50,
     height: 50,
-    borderRadius: 14,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
   },
+  fabInner: { width: 50, height: 50, alignItems: "center", justifyContent: "center" },
   storeFab: {
     position: "absolute",
     bottom: 100,
     left: 22,
+  },
+  storeFabInner: {
     paddingHorizontal: 14,
     paddingVertical: 12,
-    borderRadius: 999,
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    shadowColor: "#000",
-    shadowOpacity: 0.15,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 8,
   },
-  storeFabText: { color: "white", fontFamily: "NotoSansKR_700Bold", fontSize: 14 },
+  storeFabText: { fontFamily: "NotoSansKR_700Bold", fontSize: 14 },
 });

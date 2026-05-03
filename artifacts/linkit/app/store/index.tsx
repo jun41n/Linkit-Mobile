@@ -4,6 +4,7 @@ import React from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { GlassSurface } from "@/components/GlassSurface";
 import { useStickers } from "@/context/StickersContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -74,37 +75,39 @@ function PackCard({
 }) {
   const colors = useColors();
   return (
-    <Pressable onPress={onPress} style={[styles.packCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-      <View style={[styles.packCover, { backgroundColor: pack.themeColor }]}>
-        <Text style={styles.packCoverEmoji}>{pack.coverEmoji}</Text>
-        {pack.isPaid && (
-          <View style={[styles.proBadge, { backgroundColor: colors.proGold }]}>
-            <Ionicons name="diamond" size={10} color="white" />
-            <Text style={styles.proBadgeText}>PRO</Text>
-          </View>
-        )}
-      </View>
-      <View style={styles.packInfo}>
-        <Text style={[styles.packName, { color: colors.foreground }]} numberOfLines={1}>
-          {pack.name}
-        </Text>
-        <Text style={[styles.packDesc, { color: colors.mutedForeground }]} numberOfLines={2}>
-          {pack.description}
-        </Text>
-        <View style={styles.packBottom}>
-          {owned ? (
-            <View style={[styles.ownedBadge, { backgroundColor: colors.softMint }]}>
-              <Ionicons name="checkmark" size={12} color="#1F7D54" />
-              <Text style={[styles.ownedText, { color: "#1F7D54" }]}>보유중</Text>
+    <GlassSurface variant="card" tone="neutral" borderRadius={16} style={styles.packCard}>
+      <Pressable onPress={onPress}>
+        <View style={[styles.packCover, { backgroundColor: pack.themeColor }]}>
+          <Text style={styles.packCoverEmoji}>{pack.coverEmoji}</Text>
+          {pack.isPaid && (
+            <View style={[styles.proBadge, { backgroundColor: colors.proGold }]}>
+              <Ionicons name="diamond" size={10} color="white" />
+              <Text style={styles.proBadgeText}>PRO</Text>
             </View>
-          ) : pack.isPaid ? (
-            <Text style={[styles.priceText, { color: colors.foreground }]}>₩{pack.price.toLocaleString()}</Text>
-          ) : (
-            <Text style={[styles.priceText, { color: colors.foreground }]}>무료</Text>
           )}
         </View>
-      </View>
-    </Pressable>
+        <View style={styles.packInfo}>
+          <Text style={[styles.packName, { color: colors.foreground }]} numberOfLines={1}>
+            {pack.name}
+          </Text>
+          <Text style={[styles.packDesc, { color: colors.mutedForeground }]} numberOfLines={2}>
+            {pack.description}
+          </Text>
+          <View style={styles.packBottom}>
+            {owned ? (
+              <View style={[styles.ownedBadge, { backgroundColor: colors.softMint }]}>
+                <Ionicons name="checkmark" size={12} color="#1F7D54" />
+                <Text style={[styles.ownedText, { color: "#1F7D54" }]}>보유중</Text>
+              </View>
+            ) : pack.isPaid ? (
+              <Text style={[styles.priceText, { color: colors.foreground }]}>₩{pack.price.toLocaleString()}</Text>
+            ) : (
+              <Text style={[styles.priceText, { color: colors.foreground }]}>무료</Text>
+            )}
+          </View>
+        </View>
+      </Pressable>
+    </GlassSurface>
   );
 }
 
@@ -126,8 +129,6 @@ const styles = StyleSheet.create({
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
   packCard: {
     width: "47%",
-    borderRadius: 16,
-    borderWidth: 1,
     overflow: "hidden",
   },
   packCover: {
