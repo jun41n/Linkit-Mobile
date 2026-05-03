@@ -23,6 +23,10 @@ export default function VideoLogScreen() {
   const router = useRouter();
   const { entries, diaries } = useDiaries();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [logType, setLogType] = useState<"daily" | "travel">("daily");
+  const logLabel = logType === "daily" ? "데일리 로그" : "트래블 로그";
+  const logTint = logType === "daily" ? "#FFB7C5" : "#A8C8F0";
+  const logEmoji = logType === "daily" ? "🌟" : "✈️";
 
   const videoEntries = useMemo(
     () => entries.filter((e) => e.isVideo || e.videoUri),
@@ -37,13 +41,13 @@ export default function VideoLogScreen() {
       <View style={styles.header}>
         <View style={[styles.titleChip, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <Pressable onPress={() => setMenuOpen((v) => !v)} style={styles.titleRow}>
-            <View style={[styles.faceIcon, { backgroundColor: "#FFB7C5" }]}>
-              <Text style={styles.faceIconText}>:)</Text>
+            <View style={[styles.faceIcon, { backgroundColor: logTint }]}>
+              <Text style={styles.faceIconText}>{logType === "daily" ? ":)" : "✈"}</Text>
             </View>
             <Text style={[styles.titleText, { color: colors.foreground }]} numberOfLines={1}>
-              하루로그 생성 중...
+              {logLabel}
             </Text>
-            <Ionicons name="chevron-down" size={16} color={colors.mutedForeground} />
+            <Ionicons name={menuOpen ? "chevron-up" : "chevron-down"} size={16} color={colors.mutedForeground} />
           </Pressable>
         </View>
 
@@ -65,15 +69,45 @@ export default function VideoLogScreen() {
           <Pressable
             style={styles.menuItem}
             onPress={() => {
+              setLogType("daily");
+              setMenuOpen(false);
+            }}
+          >
+            <View style={styles.menuRow}>
+              <View style={[styles.menuDot, { backgroundColor: "#FFB7C5" }]} />
+              <Text style={[styles.menuText, { color: colors.foreground }]}>데일리 로그</Text>
+              {logType === "daily" && (
+                <Ionicons name="checkmark" size={18} color={colors.primary} style={{ marginLeft: "auto" }} />
+              )}
+            </View>
+            <Text style={[styles.menuSub, { color: colors.mutedForeground }]}>매일의 짧은 일상 영상</Text>
+          </Pressable>
+          <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
+          <Pressable
+            style={styles.menuItem}
+            onPress={() => {
+              setLogType("travel");
+              setMenuOpen(false);
+            }}
+          >
+            <View style={styles.menuRow}>
+              <View style={[styles.menuDot, { backgroundColor: "#A8C8F0" }]} />
+              <Text style={[styles.menuText, { color: colors.foreground }]}>트래블 로그</Text>
+              {logType === "travel" && (
+                <Ionicons name="checkmark" size={18} color={colors.primary} style={{ marginLeft: "auto" }} />
+              )}
+            </View>
+            <Text style={[styles.menuSub, { color: colors.mutedForeground }]}>여행지에서 남기는 기록</Text>
+          </Pressable>
+          <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
+          <Pressable
+            style={styles.menuItem}
+            onPress={() => {
               setMenuOpen(false);
               router.push("/diary/new");
             }}
           >
-            <Text style={[styles.menuText, { color: colors.foreground }]}>로그 만들기</Text>
-          </Pressable>
-          <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
-          <Pressable style={styles.menuItem} onPress={() => setMenuOpen(false)}>
-            <Text style={[styles.menuText, { color: colors.foreground }]}>로그 참여하기</Text>
+            <Text style={[styles.menuText, { color: colors.foreground }]}>+ 로그 만들기</Text>
           </Pressable>
         </View>
       )}
@@ -90,12 +124,16 @@ export default function VideoLogScreen() {
           <View style={[styles.logCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={styles.cardHeaderRow}>
               <View style={styles.cardLeft}>
-                <Text style={[styles.cardTitle, { color: colors.foreground }]}>vlog</Text>
+                <Text style={[styles.cardTitle, { color: colors.foreground }]}>
+                  {logType === "daily" ? "vlog" : "travel log"}
+                </Text>
                 <Text style={[styles.cardSub, { color: colors.mutedForeground }]}>
-                  나만의 공간, 매일 오전 4시에 하루 시작
+                  {logType === "daily"
+                    ? "나만의 공간, 매일 오전 4시에 하루 시작"
+                    : "여행지에서의 순간을 모아 한 편의 영상으로"}
                 </Text>
               </View>
-              <Text style={styles.cardEmoji}>🌟</Text>
+              <Text style={styles.cardEmoji}>{logEmoji}</Text>
             </View>
           </View>
         )}
@@ -158,10 +196,14 @@ export default function VideoLogScreen() {
 
         {videoEntries.length === 0 && (
           <View style={[styles.emptyVideo, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Text style={[styles.emptyEmoji]}>🎬</Text>
-            <Text style={[styles.emptyTitle, { color: colors.foreground }]}>아직 영상이 없어요</Text>
+            <Text style={[styles.emptyEmoji]}>{logType === "daily" ? "🎬" : "🧳"}</Text>
+            <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
+              {logType === "daily" ? "아직 영상이 없어요" : "여행 기록이 비어있어요"}
+            </Text>
             <Text style={[styles.emptyDesc, { color: colors.mutedForeground }]}>
-              세로형 짧은 영상으로 하루를 기록해 보세요
+              {logType === "daily"
+                ? "세로형 짧은 영상으로 하루를 기록해 보세요"
+                : "여행지에서 짧은 영상을 모아 트래블 로그를 만들어 보세요"}
             </Text>
           </View>
         )}
@@ -231,8 +273,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 6 },
     shadowRadius: 12,
   },
-  menuItem: { paddingHorizontal: 16, paddingVertical: 14 },
+  menuItem: { paddingHorizontal: 16, paddingVertical: 12 },
+  menuRow: { flexDirection: "row", alignItems: "center", gap: 10 },
+  menuDot: { width: 10, height: 10, borderRadius: 5 },
   menuText: { fontFamily: "NotoSansKR_700Bold", fontSize: 15 },
+  menuSub: { fontFamily: "NotoSansKR_400Regular", fontSize: 12, marginTop: 2, marginLeft: 20 },
   menuDivider: { height: 1 },
   dotsRow: {
     flexDirection: "row",
