@@ -5,6 +5,7 @@ import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, Text
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { GlassSurface } from "@/components/GlassSurface";
+import { SocialLoginButtons } from "@/components/SocialLoginButtons";
 import { useColors } from "@/hooks/useColors";
 
 export default function SignUpScreen() {
@@ -166,6 +167,8 @@ export default function SignUpScreen() {
                 <Text style={[styles.primaryBtnText, { color: colors.primaryForeground }]}>인증코드 받기</Text>
               )}
             </Pressable>
+
+            <SocialLoginButtons context="signup" />
 
             <View style={styles.footerRow}>
               <Text style={[styles.footerText, { color: colors.mutedForeground }]}>이미 계정이 있으신가요? </Text>

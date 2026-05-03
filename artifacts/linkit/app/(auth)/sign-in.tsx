@@ -5,6 +5,7 @@ import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, Text
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { GlassSurface } from "@/components/GlassSurface";
+import { SocialLoginButtons } from "@/components/SocialLoginButtons";
 import { useColors } from "@/hooks/useColors";
 
 export default function SignInScreen() {
@@ -99,6 +100,8 @@ export default function SignInScreen() {
                 <Text style={[styles.primaryBtnText, { color: colors.primaryForeground }]}>로그인</Text>
               )}
             </Pressable>
+
+            <SocialLoginButtons context="signin" />
 
             <View style={styles.footerRow}>
               <Text style={[styles.footerText, { color: colors.mutedForeground }]}>아직 계정이 없으신가요? </Text>
