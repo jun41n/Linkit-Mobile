@@ -4,7 +4,7 @@
   "private": true,
   "main": "expo-router/entry",
   "scripts": {
-    "dev": "EXPO_PACKAGER_PROXY_URL=https://$REPLIT_EXPO_DEV_DOMAIN EXPO_PUBLIC_DOMAIN=$REPLIT_DEV_DOMAIN EXPO_PUBLIC_REPL_ID=$REPL_ID REACT_NATIVE_PACKAGER_HOSTNAME=$REPLIT_DEV_DOMAIN pnpm exec expo start --localhost --port $PORT",
+    "dev": "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=$CLERK_PUBLISHABLE_KEY EXPO_PACKAGER_PROXY_URL=https://$REPLIT_EXPO_DEV_DOMAIN EXPO_PUBLIC_DOMAIN=$REPLIT_DEV_DOMAIN EXPO_PUBLIC_REPL_ID=$REPL_ID REACT_NATIVE_PACKAGER_HOSTNAME=$REPLIT_DEV_DOMAIN pnpm exec expo start --localhost --port $PORT",
     "build": "node scripts/build.js",
     "serve": "node server/serve.js",
     "typecheck": "tsc -p tsconfig.json --noEmit"
@@ -56,6 +56,7 @@
     "zod-validation-error": "^3.4.0"
   },
   "dependencies": {
+    "@clerk/expo": "^3.2.7",
     "@expo-google-fonts/black-han-sans": "^0.4.1",
     "@expo-google-fonts/do-hyeon": "^0.4.1",
     "@expo-google-fonts/gaegu": "^0.4.1",
@@ -64,6 +65,9 @@
     "@expo-google-fonts/jua": "^0.4.1",
     "@expo-google-fonts/nanum-pen-script": "^0.4.0",
     "@expo-google-fonts/noto-sans-kr": "^0.4.3",
-    "@expo-google-fonts/single-day": "^0.4.1"
+    "@expo-google-fonts/single-day": "^0.4.1",
+    "expo-auth-session": "~7.0.11",
+    "expo-crypto": "~15.0.9",
+    "expo-secure-store": "~15.0.8"
   }
 }

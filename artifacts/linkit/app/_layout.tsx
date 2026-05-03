@@ -18,6 +18,8 @@ import { HiMelody_400Regular } from "@expo-google-fonts/hi-melody";
 import { GowunDodum_400Regular } from "@expo-google-fonts/gowun-dodum";
 import { Jua_400Regular } from "@expo-google-fonts/jua";
 import { DoHyeon_400Regular } from "@expo-google-fonts/do-hyeon";
+import { ClerkProvider, ClerkLoaded } from "@clerk/expo";
+import { tokenCache } from "@clerk/expo/token-cache";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -34,9 +36,13 @@ SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+const proxyUrl = process.env.EXPO_PUBLIC_CLERK_PROXY_URL || undefined;
+
 function RootLayoutNav() {
   return (
     <Stack screenOptions={{ headerBackTitle: "뒤로", headerTitleStyle: { fontFamily: "NotoSansKR_700Bold", fontSize: 17 } }}>
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="diary/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="diary/new" options={{ presentation: "modal", title: "새 다이어리 만들기" }} />
@@ -78,20 +84,24 @@ export default function RootLayout() {
   if (!fontsLoaded && !fontError) return null;
 
   return (
-    <SafeAreaProvider>
-      <ErrorBoundary>
-        <QueryClientProvider client={queryClient}>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <KeyboardProvider>
-              <DiariesProvider>
-                <StickersProvider>
-                  <RootLayoutNav />
-                </StickersProvider>
-              </DiariesProvider>
-            </KeyboardProvider>
-          </GestureHandlerRootView>
-        </QueryClientProvider>
-      </ErrorBoundary>
-    </SafeAreaProvider>
+    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache} proxyUrl={proxyUrl}>
+      <ClerkLoaded>
+        <SafeAreaProvider>
+          <ErrorBoundary>
+            <QueryClientProvider client={queryClient}>
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <KeyboardProvider>
+                  <DiariesProvider>
+                    <StickersProvider>
+                      <RootLayoutNav />
+                    </StickersProvider>
+                  </DiariesProvider>
+                </KeyboardProvider>
+              </GestureHandlerRootView>
+            </QueryClientProvider>
+          </ErrorBoundary>
+        </SafeAreaProvider>
+      </ClerkLoaded>
+    </ClerkProvider>
   );
 }

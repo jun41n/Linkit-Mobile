@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+import { useAuth } from "@clerk/expo";
+import { Redirect, Tabs } from "expo-router";
 import React from "react";
 import { Platform, StyleSheet, View } from "react-native";
 
@@ -9,6 +10,10 @@ import { useColors } from "@/hooks/useColors";
 export default function TabLayout() {
   const colors = useColors();
   const isWeb = Platform.OS === "web";
+  const { isSignedIn, isLoaded } = useAuth();
+
+  if (!isLoaded) return null;
+  if (!isSignedIn) return <Redirect href="/(auth)/sign-in" />;
 
   return (
     <Tabs
