@@ -1,13 +1,13 @@
 const colors = {
   light: {
-    text: "#2A2520",
+    text: "#2A2540",
     tint: "#6B8AE8",
 
-    background: "#FBF6EC",
-    foreground: "#2A2520",
+    background: "#F4F1FB",
+    foreground: "#2A2540",
 
     card: "#FFFFFF",
-    cardForeground: "#2A2520",
+    cardForeground: "#2A2540",
 
     primary: "#6B8AE8",
     primaryForeground: "#FFFFFF",
@@ -18,21 +18,21 @@ const colors = {
     secondary: "#EAE3FB",
     secondaryForeground: "#5A4A8A",
 
-    muted: "#F2EADA",
-    mutedForeground: "#8A7E6E",
+    muted: "#EDE8F7",
+    mutedForeground: "#7A7396",
 
     destructive: "#E5634D",
     destructiveForeground: "#FFFFFF",
 
-    border: "#EADFC8",
-    input: "#EADFC8",
+    border: "#E2DBF1",
+    input: "#E2DBF1",
 
     gradientStart: "#6B8AE8",
     gradientEnd: "#EC85B7",
 
-    paperCream: "#FBF6EC",
-    paperWhite: "#FFFEF8",
-    inkBrown: "#5C4A36",
+    paperCream: "#FAF7FE",
+    paperWhite: "#FFFFFF",
+    inkBrown: "#3A3258",
     highlightYellow: "#FFE76A",
     softMint: "#BDEBD8",
     softPink: "#F8C9DC",

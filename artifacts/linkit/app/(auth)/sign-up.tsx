@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AuthBackdrop } from "@/components/AuthBackdrop";
 import { GlassSurface } from "@/components/GlassSurface";
 import { SocialLoginButtons } from "@/components/SocialLoginButtons";
 import { useColors } from "@/hooks/useColors";
@@ -53,7 +54,8 @@ export default function SignUpScreen() {
   if (verifying) {
     const canVerify = code.trim().length >= 4 && !isLoading;
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={["top", "bottom"]}>
+      <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
+        <AuthBackdrop />
         <ScrollView style={styles.scrollOuter} contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
           <View style={styles.brand}>
             <Image
@@ -111,7 +113,8 @@ export default function SignUpScreen() {
   const canSubmit = emailAddress.trim().length > 0 && password.length >= 8 && !isLoading;
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={["top", "bottom"]}>
+    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
+      <AuthBackdrop />
       <ScrollView style={styles.scrollOuter} contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
         <View style={styles.brand}>
           <Image
@@ -168,7 +171,7 @@ export default function SignUpScreen() {
               )}
             </Pressable>
 
-            <SocialLoginButtons context="signup" />
+            <SocialLoginButtons />
 
             <View style={styles.footerRow}>
               <Text style={[styles.footerText, { color: colors.mutedForeground }]}>이미 계정이 있으신가요? </Text>
