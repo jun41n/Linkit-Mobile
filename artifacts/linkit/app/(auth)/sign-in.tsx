@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   scrollOuter: { flex: 1 },
   scroll: { padding: 24, paddingTop: 60, gap: 24, flexGrow: 1 },
   brand: { alignItems: "center", gap: 6 },
-  brandLogo: { width: 180, height: 120 },
+  brandLogo: { width: 240, height: 180 },
   brandTag: { fontFamily: "NotoSansKR_500Medium", fontSize: 14 },
   card: { marginTop: 8 },
   cardInner: { padding: 22, gap: 8 },
