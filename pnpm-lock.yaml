@@ -215,7 +215,31 @@ importers:
 
   artifacts/linkit:
     dependencies:
+      '@expo-google-fonts/black-han-sans':
+        specifier: ^0.4.1
+        version: 0.4.1
+      '@expo-google-fonts/do-hyeon':
+        specifier: ^0.4.1
+        version: 0.4.1
       '@expo-google-fonts/gaegu':
+        specifier: ^0.4.1
+        version: 0.4.1
+      '@expo-google-fonts/gowun-dodum':
+        specifier: ^0.4.1
+        version: 0.4.1
+      '@expo-google-fonts/hi-melody':
+        specifier: ^0.4.1
+        version: 0.4.1
+      '@expo-google-fonts/jua':
+        specifier: ^0.4.1
+        version: 0.4.1
+      '@expo-google-fonts/nanum-pen-script':
+        specifier: ^0.4.0
+        version: 0.4.0
+      '@expo-google-fonts/noto-sans-kr':
+        specifier: ^0.4.3
+        version: 0.4.3
+      '@expo-google-fonts/single-day':
         specifier: ^0.4.1
         version: 0.4.1
     devDependencies:
@@ -1121,11 +1145,35 @@ packages:
     cpu: [x64]
     os: [linux]
 
+  '@expo-google-fonts/black-han-sans@0.4.1':
+    resolution: {integrity: sha512-82C84aqDOb/tzWj7fkfchAg/RreBlWuvl8nLO6FPFgG6bCxeUDWocxoRqzW3p2VLLPPM6mwHJOQGuQMTpyHqNA==}
+
+  '@expo-google-fonts/do-hyeon@0.4.1':
+    resolution: {integrity: sha512-Cgtstz6hIoHN05M6HG4KgnwuNqqKnhkqpADjko6BafYhz6MsqoilEUfcxdUIuIUomvES+dQVZiCpOyJQaoMJXA==}
+
   '@expo-google-fonts/gaegu@0.4.1':
     resolution: {integrity: sha512-qaT0EdguT/3GkC4iZyC8RXuoJaqhVDqjntVxAtyGH2TaBcotHpFd2RcaAY8cGm/mtKeGGOJbRR9A68ZQ8zYOXQ==}
 
+  '@expo-google-fonts/gowun-dodum@0.4.1':
+    resolution: {integrity: sha512-De9v4TRISd9344Nbdikz+sMVVqPyoOQQ4GzXLwQvOh9SjK3HRFpKn5gmaGtG5iGIkMSTs7mv1bDd5k5QXDggzA==}
+
+  '@expo-google-fonts/hi-melody@0.4.1':
+    resolution: {integrity: sha512-lZcJIamxzXnp2hYaJzvTBABSFejhvRjvou8+6izIED1SJLMXH/ZssmckbUmiC3VfyIfGBEDehGKWNGw3ajxlag==}
+
   '@expo-google-fonts/inter@0.4.2':
     resolution: {integrity: sha512-syfiImMaDmq7cFi0of+waE2M4uSCyd16zgyWxdPOY7fN2VBmSLKEzkfbZgeOjJq61kSqPBNNtXjggiQiSD6gMQ==}
+
+  '@expo-google-fonts/jua@0.4.1':
+    resolution: {integrity: sha512-I6x3U8BSeMr8m+j7GMcI+3jkfnF6Umrn/moCdB0QrvUX/ecXN0yVse/sznE7uru/4VCDE5/3vsCIS9/zLRsGTQ==}
+
+  '@expo-google-fonts/nanum-pen-script@0.4.0':
+    resolution: {integrity: sha512-Gvu4TjorCmhLVN/+xX2OAaX2bNAHbUN5L7qBFOlrk8AYbt/OsUufLCaQn1B8J8NcQg2e166YiTcahFS9Rjg06A==}
+
+  '@expo-google-fonts/noto-sans-kr@0.4.3':
+    resolution: {integrity: sha512-EVS/uJPcf1TgJtjmQmrFr0oGdcl7ml09CSu0E/AyGzR0UfzdR2pBbzWWPsnuzZiGUl643ODYwYiXK5+B+fLjhQ==}
+
+  '@expo-google-fonts/single-day@0.4.1':
+    resolution: {integrity: sha512-m0ieVRFNXG1nPbmgpJmqduXojZNb8+8aDBKltaWDyOPGjxHeIMYwjS7xwMaVuo7q6iyxbsD5Y7GJRfnkjQb4/A==}
 
   '@expo/cli@54.0.23':
     resolution: {integrity: sha512-km0h72SFfQCmVycH/JtPFTVy69w6Lx1cHNDmfLfQqgKFYeeHTjx7LVDP4POHCtNxFP2UeRazrygJhlh4zz498g==}
@@ -6298,9 +6346,25 @@ snapshots:
   '@esbuild/linux-x64@0.27.3':
     optional: true
 
+  '@expo-google-fonts/black-han-sans@0.4.1': {}
+
+  '@expo-google-fonts/do-hyeon@0.4.1': {}
+
   '@expo-google-fonts/gaegu@0.4.1': {}
 
+  '@expo-google-fonts/gowun-dodum@0.4.1': {}
+
+  '@expo-google-fonts/hi-melody@0.4.1': {}
+
   '@expo-google-fonts/inter@0.4.2': {}
+
+  '@expo-google-fonts/jua@0.4.1': {}
+
+  '@expo-google-fonts/nanum-pen-script@0.4.0': {}
+
+  '@expo-google-fonts/noto-sans-kr@0.4.3': {}
+
+  '@expo-google-fonts/single-day@0.4.1': {}
 
   '@expo/cli@54.0.23(expo-router@6.0.23)(expo@54.0.34)(react-native@0.81.5(@babel/core@7.29.0)(@types/react@19.1.17)(react@19.1.0))(typescript@5.9.3)':
     dependencies:

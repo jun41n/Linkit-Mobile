@@ -118,7 +118,7 @@ export default function MyScreen() {
           <View style={[styles.divider, { backgroundColor: colors.border }]} />
           <View style={[styles.row]}>
             <Text style={[styles.rowLabel, { color: colors.foreground }]}>현재 버전</Text>
-            <Text style={[{ color: colors.mutedForeground, fontFamily: "Gaegu_700Bold" }]}>1.0.0</Text>
+            <Text style={[{ color: colors.mutedForeground, fontFamily: "NotoSansKR_700Bold" }]}>1.0.0</Text>
           </View>
         </View>
 
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  headerTitle: { flex: 1, fontFamily: "Gaegu_700Bold", fontSize: 22 },
+  headerTitle: { flex: 1, fontFamily: "NotoSansKR_700Bold", fontSize: 22 },
   headerActions: { flexDirection: "row", gap: 8 },
   iconBtn: {
     width: 36,
@@ -168,8 +168,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  profileName: { fontFamily: "Gaegu_700Bold", fontSize: 24 },
-  profileId: { fontFamily: "Gaegu_400Regular", fontSize: 13 },
+  profileName: { fontFamily: "NotoSansKR_700Bold", fontSize: 24 },
+  profileId: { fontFamily: "NotoSansKR_400Regular", fontSize: 13 },
   statsRow: { flexDirection: "row", gap: 10, paddingHorizontal: 22, paddingVertical: 12 },
   statBox: {
     flex: 1,
@@ -179,13 +179,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   statNum: { fontFamily: "Inter_700Bold", fontSize: 22 },
-  statLabel: { fontFamily: "Gaegu_400Regular", fontSize: 13, marginTop: 2 },
+  statLabel: { fontFamily: "NotoSansKR_400Regular", fontSize: 13, marginTop: 2 },
   sectionHeader: {
     paddingHorizontal: 22,
     paddingVertical: 8,
     marginTop: 14,
   },
-  sectionHeaderText: { fontFamily: "Gaegu_700Bold", fontSize: 14 },
+  sectionHeaderText: { fontFamily: "NotoSansKR_700Bold", fontSize: 14 },
   sectionBody: {},
   row: {
     paddingHorizontal: 22,
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  rowLabel: { flex: 1, fontFamily: "Gaegu_700Bold", fontSize: 16 },
+  rowLabel: { flex: 1, fontFamily: "NotoSansKR_700Bold", fontSize: 16 },
   rowRight: { flexDirection: "row", alignItems: "center", gap: 8 },
   badge: {
     paddingHorizontal: 8,

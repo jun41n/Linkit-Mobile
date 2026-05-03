@@ -87,17 +87,17 @@ const styles = StyleSheet.create({
   },
   coverNumber: {
     color: "white",
-    fontFamily: "Gaegu_700Bold",
+    fontFamily: "NotoSansKR_700Bold",
     letterSpacing: 1,
   },
   memberCount: {
     color: "white",
-    fontFamily: "Gaegu_400Regular",
+    fontFamily: "NotoSansKR_400Regular",
     opacity: 0.9,
   },
   diaryLabel: {
     marginTop: 8,
-    fontFamily: "Gaegu_700Bold",
+    fontFamily: "NotoSansKR_700Bold",
     fontSize: 14,
     textAlign: "center",
     maxWidth: 140,

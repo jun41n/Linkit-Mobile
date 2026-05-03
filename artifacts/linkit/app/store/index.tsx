@@ -119,10 +119,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   bannerTag: { color: "#FFD86B", fontFamily: "Inter_700Bold", fontSize: 11, marginBottom: 4 },
-  bannerTitle: { color: "white", fontFamily: "Gaegu_700Bold", fontSize: 19 },
-  bannerSub: { color: "rgba(255,255,255,0.8)", fontFamily: "Gaegu_400Regular", fontSize: 13, marginTop: 2 },
+  bannerTitle: { color: "white", fontFamily: "NotoSansKR_700Bold", fontSize: 19 },
+  bannerSub: { color: "rgba(255,255,255,0.8)", fontFamily: "NotoSansKR_400Regular", fontSize: 13, marginTop: 2 },
   bannerEmoji: { fontSize: 50 },
-  sectionTitle: { fontFamily: "Gaegu_700Bold", fontSize: 18, marginTop: 6 },
+  sectionTitle: { fontFamily: "NotoSansKR_700Bold", fontSize: 18, marginTop: 6 },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
   packCard: {
     width: "47%",
@@ -150,8 +150,8 @@ const styles = StyleSheet.create({
   },
   proBadgeText: { color: "white", fontFamily: "Inter_700Bold", fontSize: 9, letterSpacing: 0.5 },
   packInfo: { padding: 12, gap: 4 },
-  packName: { fontFamily: "Gaegu_700Bold", fontSize: 15 },
-  packDesc: { fontFamily: "Gaegu_400Regular", fontSize: 12, minHeight: 32 },
+  packName: { fontFamily: "NotoSansKR_700Bold", fontSize: 15 },
+  packDesc: { fontFamily: "NotoSansKR_400Regular", fontSize: 12, minHeight: 32 },
   packBottom: { marginTop: 6 },
   ownedBadge: {
     flexDirection: "row",
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 999,
   },
-  ownedText: { fontFamily: "Gaegu_700Bold", fontSize: 11 },
+  ownedText: { fontFamily: "NotoSansKR_700Bold", fontSize: 11 },
   priceText: { fontFamily: "Inter_700Bold", fontSize: 14 },
   notice: {
     flexDirection: "row",
@@ -171,5 +171,5 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 14,
   },
-  noticeText: { flex: 1, fontFamily: "Gaegu_400Regular", fontSize: 13 },
+  noticeText: { flex: 1, fontFamily: "NotoSansKR_400Regular", fontSize: 13 },
 });

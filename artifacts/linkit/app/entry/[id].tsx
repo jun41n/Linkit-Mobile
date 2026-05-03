@@ -14,6 +14,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useDiaries } from "@/context/DiariesContext";
+import { getFontFamily } from "@/constants/fonts";
 import { useColors } from "@/hooks/useColors";
 
 function formatFull(iso: string) {
@@ -112,6 +113,7 @@ export default function EntryDetailScreen() {
                   top: `${t.y}%`,
                   color: t.color,
                   fontSize: t.fontSize,
+                  fontFamily: getFontFamily(t.fontId),
                 },
               ]}
             >
@@ -153,7 +155,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  headerTitle: { fontFamily: "Gaegu_700Bold", fontSize: 16 },
+  headerTitle: { fontFamily: "NotoSansKR_700Bold", fontSize: 16 },
   headerSub: { fontFamily: "Inter_400Regular", fontSize: 11 },
   content: { padding: 16, gap: 14, alignItems: "center" },
   canvas: {
@@ -164,8 +166,8 @@ const styles = StyleSheet.create({
   },
   photo: { position: "absolute", top: 0, left: 0 },
   sticker: { position: "absolute" },
-  placedText: { position: "absolute", fontFamily: "Gaegu_700Bold" },
+  placedText: { position: "absolute", fontFamily: "NotoSansKR_700Bold" },
   playOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   bodyBox: { width: "100%", borderRadius: 16, borderWidth: 1, padding: 16 },
-  bodyText: { fontFamily: "Gaegu_400Regular", fontSize: 16, lineHeight: 24 },
+  bodyText: { fontFamily: "NotoSansKR_400Regular", fontSize: 16, lineHeight: 24 },
 });

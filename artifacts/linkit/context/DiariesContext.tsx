@@ -21,6 +21,7 @@ export interface PlacedText {
   y: number;
   color: string;
   fontSize: number;
+  fontId?: string;
 }
 
 export interface DiaryEntry {

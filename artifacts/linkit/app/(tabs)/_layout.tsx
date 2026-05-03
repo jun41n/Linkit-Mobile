@@ -22,19 +22,40 @@ export default function TabLayout() {
         tabBarShowLabel: false,
         tabBarStyle: {
           position: "absolute",
-          backgroundColor: isIOS ? "transparent" : colors.card,
-          borderTopWidth: 1,
-          borderTopColor: colors.border,
+          backgroundColor: isIOS ? "transparent" : (isWeb ? "rgba(255,255,255,0.78)" : colors.card),
+          borderTopWidth: 0,
           elevation: 0,
-          height: isWeb ? 84 : 76,
-          paddingBottom: isWeb ? 30 : 20,
+          height: isWeb ? 84 : 80,
+          paddingBottom: isWeb ? 30 : 22,
           paddingTop: 12,
         },
         tabBarBackground: () =>
           isIOS ? (
-            <BlurView intensity={70} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+            <View style={StyleSheet.absoluteFill}>
+              <BlurView
+                intensity={95}
+                tint={isDark ? "dark" : "systemUltraThinMaterialLight" as any}
+                style={StyleSheet.absoluteFill}
+              />
+              <View
+                style={[
+                  StyleSheet.absoluteFill,
+                  { backgroundColor: isDark ? "rgba(20,18,16,0.18)" : "rgba(255,255,255,0.18)" },
+                ]}
+              />
+              <View
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 1,
+                  backgroundColor: isDark ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.65)",
+                }}
+              />
+            </View>
           ) : (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.card }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: isWeb ? "rgba(255,255,255,0.78)" : colors.card, borderTopWidth: 1, borderTopColor: colors.border }]} />
           ),
       }}
     >

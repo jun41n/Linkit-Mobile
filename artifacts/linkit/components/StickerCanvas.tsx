@@ -13,6 +13,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { PlacedSticker, PlacedText } from "@/context/DiariesContext";
+import { getFontFamily } from "@/constants/fonts";
 import { useColors } from "@/hooks/useColors";
 
 interface Props {
@@ -178,7 +179,7 @@ function TextItem({ text, width, height, onUpdate, onRemove, selected, onSelect 
     <GestureDetector gesture={composed}>
       <Animated.View style={[styles.textItem, animatedStyle]}>
         <View style={selected ? [styles.selectionRing, { borderColor: colors.primary, padding: 6 }] : null}>
-          <Text style={[styles.placedText, { color: text.color, fontSize: text.fontSize }]}>{text.text}</Text>
+          <Text style={[styles.placedText, { color: text.color, fontSize: text.fontSize, fontFamily: getFontFamily(text.fontId) }]}>{text.text}</Text>
         </View>
         {selected && (
           <Pressable
@@ -274,5 +275,5 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
   },
-  placedText: { fontFamily: "Gaegu_700Bold" },
+  placedText: { fontFamily: "NotoSansKR_700Bold" },
 });

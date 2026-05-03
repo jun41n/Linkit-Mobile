@@ -126,8 +126,8 @@ const styles = StyleSheet.create({
   },
   coverEmoji: { fontSize: 88 },
   titleRow: { flexDirection: "row", alignItems: "flex-start", gap: 12 },
-  packName: { fontFamily: "Gaegu_700Bold", fontSize: 22 },
-  packDesc: { fontFamily: "Gaegu_400Regular", fontSize: 14, marginTop: 4, lineHeight: 20 },
+  packName: { fontFamily: "NotoSansKR_700Bold", fontSize: 22 },
+  packDesc: { fontFamily: "NotoSansKR_400Regular", fontSize: 14, marginTop: 4, lineHeight: 20 },
   proPill: {
     flexDirection: "row",
     alignItems: "center",
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
   proPillText: { color: "white", fontFamily: "Inter_700Bold", fontSize: 11 },
   previewBox: { borderRadius: 16, borderWidth: 1, padding: 14, gap: 12 },
-  previewLabel: { fontFamily: "Gaegu_700Bold", fontSize: 13 },
+  previewLabel: { fontFamily: "NotoSansKR_700Bold", fontSize: 13 },
   stickerGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   stickerCell: {
     width: 60,
@@ -165,5 +165,5 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 14,
   },
-  btnText: { fontFamily: "Gaegu_700Bold", fontSize: 16 },
+  btnText: { fontFamily: "NotoSansKR_700Bold", fontSize: 16 },
 });

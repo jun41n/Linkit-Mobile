@@ -18,6 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { StickerCanvas } from "@/components/StickerCanvas";
 import { StickerDrawer } from "@/components/StickerDrawer";
+import { DIARY_FONTS, DEFAULT_DIARY_FONT, getFontFamily } from "@/constants/fonts";
 import { PlacedSticker, PlacedText, useDiaries } from "@/context/DiariesContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -57,6 +58,8 @@ export default function NewEntryScreen() {
   const [activeTool, setActiveTool] = useState<"write" | "decorate" | "bg">("write");
   const [textInput, setTextInput] = useState("");
   const [textColor, setTextColor] = useState(TEXT_COLORS[0]);
+  const [bodyFontId, setBodyFontId] = useState<string>("noto_sans");
+  const [stickerFontId, setStickerFontId] = useState<string>(DEFAULT_DIARY_FONT.id);
 
   const canvasWidth = width - 32;
   const canvasHeight = isVideoMode ? canvasWidth * 1.6 : canvasWidth * 1.2;
@@ -117,6 +120,7 @@ export default function NewEntryScreen() {
         y: 30,
         color: textColor,
         fontSize: 22,
+        fontId: stickerFontId,
       },
     ]);
     setTextInput("");
@@ -172,7 +176,7 @@ export default function NewEntryScreen() {
           </Text>
         </View>
         <Pressable onPress={save} style={[styles.headerBtn, styles.saveBtn, { backgroundColor: colors.foreground }]}>
-          <Text style={{ color: colors.background, fontFamily: "Gaegu_700Bold", fontSize: 14 }}>저장</Text>
+          <Text style={{ color: colors.background, fontFamily: "NotoSansKR_700Bold", fontSize: 14 }}>저장</Text>
         </Pressable>
       </View>
 
@@ -227,22 +231,96 @@ export default function NewEntryScreen() {
 
           {activeTool === "write" && (
             <View style={[styles.writeBox, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <View style={styles.fontSectionRow}>
+                <Ionicons name="text" size={14} color={colors.mutedForeground} />
+                <Text style={[styles.fontSectionLabel, { color: colors.mutedForeground }]}>일기 본문 폰트</Text>
+              </View>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.fontChipRow}>
+                {DIARY_FONTS.map((f) => {
+                  const active = bodyFontId === f.id;
+                  return (
+                    <Pressable
+                      key={f.id}
+                      onPress={() => setBodyFontId(f.id)}
+                      style={[
+                        styles.fontChip,
+                        {
+                          backgroundColor: active ? colors.foreground : colors.muted,
+                          borderColor: active ? colors.foreground : colors.border,
+                        },
+                      ]}
+                    >
+                      <Text
+                        style={{
+                          fontFamily: f.family,
+                          color: active ? colors.background : colors.foreground,
+                          fontSize: 16,
+                        }}
+                      >
+                        {f.preview}
+                      </Text>
+                      <Text
+                        style={{
+                          fontFamily: "NotoSansKR_500Medium",
+                          color: active ? colors.background : colors.mutedForeground,
+                          fontSize: 10,
+                          marginTop: 2,
+                        }}
+                      >
+                        {f.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
               <TextInput
                 value={body}
                 onChangeText={setBody}
                 multiline
                 placeholder="오늘의 하루를 기록해 보세요..."
                 placeholderTextColor={colors.mutedForeground}
-                style={[styles.writeInput, { color: colors.foreground }]}
+                style={[styles.writeInput, { color: colors.foreground, fontFamily: getFontFamily(bodyFontId) }]}
               />
               <View style={[styles.dividerH, { backgroundColor: colors.border }]} />
+              <View style={styles.fontSectionRow}>
+                <Ionicons name="brush" size={14} color={colors.mutedForeground} />
+                <Text style={[styles.fontSectionLabel, { color: colors.mutedForeground }]}>다꾸 손글씨 폰트</Text>
+              </View>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.fontChipRow}>
+                {DIARY_FONTS.map((f) => {
+                  const active = stickerFontId === f.id;
+                  return (
+                    <Pressable
+                      key={f.id}
+                      onPress={() => setStickerFontId(f.id)}
+                      style={[
+                        styles.fontChip,
+                        {
+                          backgroundColor: active ? colors.foreground : colors.muted,
+                          borderColor: active ? colors.foreground : colors.border,
+                        },
+                      ]}
+                    >
+                      <Text
+                        style={{
+                          fontFamily: f.family,
+                          color: active ? colors.background : colors.foreground,
+                          fontSize: 16,
+                        }}
+                      >
+                        {f.preview}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
               <View style={styles.textAddRow}>
                 <TextInput
                   value={textInput}
                   onChangeText={setTextInput}
                   placeholder="페이지 위에 손글씨 텍스트 추가"
                   placeholderTextColor={colors.mutedForeground}
-                  style={[styles.textAddInput, { color: textColor }]}
+                  style={[styles.textAddInput, { color: textColor, fontFamily: getFontFamily(stickerFontId) }]}
                 />
                 <Pressable onPress={addText} style={[styles.textAddBtn, { backgroundColor: colors.foreground }]}>
                   <Ionicons name="add" size={16} color={colors.background} />
@@ -279,7 +357,7 @@ export default function NewEntryScreen() {
         </ScrollView>
 
         {activeTool === "decorate" && (
-          <StickerDrawer onPick={addSticker} height={260} />
+          <StickerDrawer onPick={addSticker} height={300} />
         )}
 
         <View style={[styles.toolbar, { backgroundColor: colors.card, borderTopColor: colors.border }]}>
@@ -331,7 +409,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     justifyContent: "center",
   },
-  diaryChipText: { fontFamily: "Gaegu_700Bold", fontSize: 14, maxWidth: 200 },
+  diaryChipText: { fontFamily: "NotoSansKR_700Bold", fontSize: 14, maxWidth: 200 },
   scrollContent: { padding: 16, gap: 12 },
   canvasWrap: { alignItems: "center" },
   actionRow: { flexDirection: "row", gap: 8, flexWrap: "wrap" },
@@ -344,17 +422,28 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: 1,
   },
-  actionText: { fontFamily: "Gaegu_700Bold", fontSize: 13 },
-  writeBox: { borderRadius: 16, borderWidth: 1, padding: 14, gap: 12 },
-  writeInput: { minHeight: 80, fontFamily: "Gaegu_400Regular", fontSize: 16, lineHeight: 24, textAlignVertical: "top" },
-  dividerH: { height: 1 },
+  actionText: { fontFamily: "NotoSansKR_500Medium", fontSize: 13 },
+  writeBox: { borderRadius: 16, borderWidth: 1, padding: 14, gap: 10 },
+  writeInput: { minHeight: 90, fontSize: 16, lineHeight: 24, textAlignVertical: "top" },
+  dividerH: { height: 1, marginVertical: 4 },
+  fontSectionRow: { flexDirection: "row", alignItems: "center", gap: 6 },
+  fontSectionLabel: { fontFamily: "NotoSansKR_500Medium", fontSize: 11, letterSpacing: 0.3 },
+  fontChipRow: { gap: 8, paddingVertical: 4, paddingRight: 4 },
+  fontChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 14,
+    borderWidth: 1,
+    minWidth: 84,
+    alignItems: "center",
+  },
   textAddRow: { flexDirection: "row", alignItems: "center", gap: 8 },
-  textAddInput: { flex: 1, fontFamily: "Gaegu_700Bold", fontSize: 18 },
+  textAddInput: { flex: 1, fontSize: 18 },
   textAddBtn: { width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" },
   colorChipRow: { flexDirection: "row", gap: 8 },
   colorChipSm: { width: 22, height: 22, borderRadius: 11, borderWidth: 2 },
   bgBox: { borderRadius: 16, borderWidth: 1, padding: 14, gap: 10 },
-  boxLabel: { fontFamily: "Gaegu_700Bold", fontSize: 15 },
+  boxLabel: { fontFamily: "NotoSansKR_700Bold", fontSize: 15 },
   colorRowLg: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   colorChipLg: { width: 40, height: 40, borderRadius: 12, borderWidth: 2 },
   toolbar: {
@@ -371,5 +460,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 2,
   },
-  toolLabel: { fontFamily: "Gaegu_700Bold", fontSize: 12 },
+  toolLabel: { fontFamily: "NotoSansKR_700Bold", fontSize: 12 },
 });

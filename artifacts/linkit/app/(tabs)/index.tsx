@@ -63,7 +63,7 @@ export default function BookshelfScreen() {
           onPress={() => setEditing((v) => !v)}
           style={[styles.editBtn, { borderColor: colors.border, backgroundColor: editing ? colors.foreground : colors.card }]}
         >
-          <Text style={{ color: editing ? colors.card : colors.foreground, fontFamily: "Gaegu_700Bold", fontSize: 14 }}>
+          <Text style={{ color: editing ? colors.card : colors.foreground, fontFamily: "NotoSansKR_700Bold", fontSize: 14 }}>
             {editing ? "완료" : "편집"}
           </Text>
         </Pressable>
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-end",
   },
-  greeting: { fontSize: 24, fontFamily: "Gaegu_700Bold" },
+  greeting: { fontSize: 24, fontFamily: "NotoSansKR_700Bold" },
   titleRow: { flexDirection: "row", alignItems: "flex-end", marginTop: 2 },
   highlightWrap: { position: "relative" },
   highlight: {
@@ -175,8 +175,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     opacity: 0.85,
   },
-  bookshelfTitle: { fontSize: 38, fontFamily: "Gaegu_700Bold", paddingHorizontal: 4 },
-  smile: { fontSize: 26, fontFamily: "Gaegu_700Bold", marginLeft: 6, marginBottom: 6 },
+  bookshelfTitle: { fontSize: 38, fontFamily: "NotoSansKR_700Bold", paddingHorizontal: 4 },
+  smile: { fontSize: 26, fontFamily: "NotoSansKR_700Bold", marginLeft: 6, marginBottom: 6 },
   editBtn: {
     paddingHorizontal: 14,
     paddingVertical: 6,
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  searchInput: { flex: 1, fontFamily: "Gaegu_400Regular", fontSize: 15 },
+  searchInput: { flex: 1, fontFamily: "NotoSansKR_400Regular", fontSize: 15 },
   tabsRow: {
     flexDirection: "row",
     gap: 8,
@@ -212,11 +212,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: -2 },
     shadowRadius: 4,
   },
-  tabLabel: { fontFamily: "Gaegu_700Bold", fontSize: 15 },
+  tabLabel: { fontFamily: "NotoSansKR_700Bold", fontSize: 15 },
   shelfContent: { padding: 22, paddingBottom: 140, minHeight: 400 },
   empty: { alignItems: "center", paddingTop: 80 },
   emptyText: {
-    fontFamily: "Gaegu_400Regular",
+    fontFamily: "NotoSansKR_400Regular",
     fontSize: 22,
     textAlign: "center",
     lineHeight: 36,
@@ -268,5 +268,5 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
   },
-  storeFabText: { color: "white", fontFamily: "Gaegu_700Bold", fontSize: 14 },
+  storeFabText: { color: "white", fontFamily: "NotoSansKR_700Bold", fontSize: 14 },
 });

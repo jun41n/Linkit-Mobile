@@ -206,8 +206,8 @@ const styles = StyleSheet.create({
   },
   titleRow: { flexDirection: "row", alignItems: "center", gap: 8 },
   faceIcon: { width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center" },
-  faceIconText: { color: "white", fontFamily: "Gaegu_700Bold", fontSize: 14 },
-  titleText: { flex: 1, fontFamily: "Gaegu_700Bold", fontSize: 15 },
+  faceIconText: { color: "white", fontFamily: "NotoSansKR_700Bold", fontSize: 14 },
+  titleText: { flex: 1, fontFamily: "NotoSansKR_700Bold", fontSize: 15 },
   headerActions: { flexDirection: "row", gap: 8 },
   iconBtn: {
     width: 36,
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
   },
   menuItem: { paddingHorizontal: 16, paddingVertical: 14 },
-  menuText: { fontFamily: "Gaegu_700Bold", fontSize: 15 },
+  menuText: { fontFamily: "NotoSansKR_700Bold", fontSize: 15 },
   menuDivider: { height: 1 },
   dotsRow: {
     flexDirection: "row",
@@ -250,11 +250,11 @@ const styles = StyleSheet.create({
   cardHeaderRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   cardLeft: { flex: 1 },
   cardTitle: { fontFamily: "Inter_700Bold", fontSize: 18, marginBottom: 4 },
-  cardSub: { fontFamily: "Gaegu_400Regular", fontSize: 14 },
+  cardSub: { fontFamily: "NotoSansKR_400Regular", fontSize: 14 },
   cardEmoji: { fontSize: 28 },
   faceRow: { flexDirection: "row" },
   faceMini: { width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center" },
-  faceMiniText: { color: "white", fontFamily: "Gaegu_700Bold", fontSize: 12 },
+  faceMiniText: { color: "white", fontFamily: "NotoSansKR_700Bold", fontSize: 12 },
   sectionLabel: { fontFamily: "Inter_500Medium", fontSize: 13, marginTop: 14, marginLeft: 2 },
   videoCard: {
     height: 360,
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     padding: 14,
     zIndex: 2,
   },
-  videoMember: { color: "white", fontFamily: "Gaegu_700Bold", fontSize: 16 },
+  videoMember: { color: "white", fontFamily: "NotoSansKR_700Bold", fontSize: 16 },
   videoBg: {
     position: "absolute",
     inset: 0,
@@ -298,8 +298,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   emptyEmoji: { fontSize: 36 },
-  emptyTitle: { fontFamily: "Gaegu_700Bold", fontSize: 18 },
-  emptyDesc: { fontFamily: "Gaegu_400Regular", fontSize: 14, textAlign: "center" },
+  emptyTitle: { fontFamily: "NotoSansKR_700Bold", fontSize: 18 },
+  emptyDesc: { fontFamily: "NotoSansKR_400Regular", fontSize: 14, textAlign: "center" },
   inviteCard: {
     borderRadius: 18,
     borderWidth: 1,
@@ -315,5 +315,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  inviteText: { fontFamily: "Gaegu_700Bold", fontSize: 14 },
+  inviteText: { fontFamily: "NotoSansKR_700Bold", fontSize: 14 },
 });

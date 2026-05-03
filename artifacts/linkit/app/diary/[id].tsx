@@ -181,12 +181,12 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: 1,
   },
-  titleChipText: { fontFamily: "Gaegu_700Bold", fontSize: 15 },
+  titleChipText: { fontFamily: "NotoSansKR_700Bold", fontSize: 15 },
   content: { padding: 16, paddingBottom: 140, gap: 14 },
   empty: { alignItems: "center", paddingTop: 80, gap: 8 },
   emptyEmoji: { fontSize: 56 },
-  emptyTitle: { fontFamily: "Gaegu_700Bold", fontSize: 20 },
-  emptyDesc: { fontFamily: "Gaegu_400Regular", fontSize: 14, textAlign: "center", paddingHorizontal: 40 },
+  emptyTitle: { fontFamily: "NotoSansKR_700Bold", fontSize: 20 },
+  emptyDesc: { fontFamily: "NotoSansKR_400Regular", fontSize: 14, textAlign: "center", paddingHorizontal: 40 },
   entryCard: {
     borderRadius: 18,
     borderWidth: 1,
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   entryHeader: { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between" },
-  entryDate: { fontFamily: "Gaegu_700Bold", fontSize: 17 },
+  entryDate: { fontFamily: "NotoSansKR_700Bold", fontSize: 17 },
   entryTime: { fontFamily: "Inter_500Medium", fontSize: 12 },
   photoWrap: {
     position: "relative",
@@ -204,8 +204,8 @@ const styles = StyleSheet.create({
   },
   entryPhoto: { width: "100%", height: "100%" },
   stickerOverlay: { position: "absolute" },
-  entryTitle: { fontFamily: "Gaegu_700Bold", fontSize: 18 },
-  entryBody: { fontFamily: "Gaegu_400Regular", fontSize: 15, lineHeight: 22 },
+  entryTitle: { fontFamily: "NotoSansKR_700Bold", fontSize: 18 },
+  entryBody: { fontFamily: "NotoSansKR_400Regular", fontSize: 15, lineHeight: 22 },
   stickerRow: { flexDirection: "row", flexWrap: "wrap", gap: 4 },
   stickerInline: { fontSize: 22 },
   videoBadge: {
@@ -249,5 +249,5 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
   },
-  fabMainText: { fontFamily: "Gaegu_700Bold", fontSize: 16 },
+  fabMainText: { fontFamily: "NotoSansKR_700Bold", fontSize: 16 },
 });
