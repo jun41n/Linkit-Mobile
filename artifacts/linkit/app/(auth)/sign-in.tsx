@@ -1,7 +1,7 @@
 import { useSignIn } from "@clerk/expo";
 import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { GlassSurface } from "@/components/GlassSurface";
@@ -41,7 +41,11 @@ export default function SignInScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={["top", "bottom"]}>
       <ScrollView style={styles.scrollOuter} contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
         <View style={styles.brand}>
-          <Text style={[styles.brandLogo, { color: colors.foreground }]}>링킷</Text>
+          <Image
+            source={require("@/assets/images/logo.png")}
+            style={styles.brandLogo}
+            resizeMode="contain"
+          />
           <Text style={[styles.brandTag, { color: colors.mutedForeground }]}>오늘의 다꾸를 더 이쁘게</Text>
         </View>
 
@@ -86,13 +90,13 @@ export default function SignInScreen() {
               disabled={!canSubmit}
               style={[
                 styles.primaryBtn,
-                { backgroundColor: colors.foreground, opacity: canSubmit ? 1 : 0.4 },
+                { backgroundColor: colors.primary, opacity: canSubmit ? 1 : 0.4 },
               ]}
             >
               {isLoading ? (
-                <ActivityIndicator color={colors.background} />
+                <ActivityIndicator color={colors.primaryForeground} />
               ) : (
-                <Text style={[styles.primaryBtnText, { color: colors.background }]}>로그인</Text>
+                <Text style={[styles.primaryBtnText, { color: colors.primaryForeground }]}>로그인</Text>
               )}
             </Pressable>
 
@@ -116,7 +120,7 @@ const styles = StyleSheet.create({
   scrollOuter: { flex: 1 },
   scroll: { padding: 24, paddingTop: 60, gap: 24, flexGrow: 1 },
   brand: { alignItems: "center", gap: 6 },
-  brandLogo: { fontFamily: "BlackHanSans_400Regular", fontSize: 56, letterSpacing: -1 },
+  brandLogo: { width: 180, height: 120 },
   brandTag: { fontFamily: "NotoSansKR_500Medium", fontSize: 14 },
   card: { marginTop: 8 },
   cardInner: { padding: 22, gap: 8 },

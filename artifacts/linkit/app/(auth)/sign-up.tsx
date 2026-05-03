@@ -1,7 +1,7 @@
 import { useSignUp } from "@clerk/expo";
 import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { GlassSurface } from "@/components/GlassSurface";
@@ -55,7 +55,11 @@ export default function SignUpScreen() {
       <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={["top", "bottom"]}>
         <ScrollView style={styles.scrollOuter} contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
           <View style={styles.brand}>
-            <Text style={[styles.brandLogo, { color: colors.foreground }]}>링킷</Text>
+            <Image
+              source={require("@/assets/images/logo.png")}
+              style={styles.brandLogo}
+              resizeMode="contain"
+            />
             <Text style={[styles.brandTag, { color: colors.mutedForeground }]}>이메일 인증코드를 보냈어요</Text>
           </View>
 
@@ -84,12 +88,12 @@ export default function SignUpScreen() {
               <Pressable
                 onPress={handleVerify}
                 disabled={!canVerify}
-                style={[styles.primaryBtn, { backgroundColor: colors.foreground, opacity: canVerify ? 1 : 0.4 }]}
+                style={[styles.primaryBtn, { backgroundColor: colors.primary, opacity: canVerify ? 1 : 0.4 }]}
               >
                 {isLoading ? (
-                  <ActivityIndicator color={colors.background} />
+                  <ActivityIndicator color={colors.primaryForeground} />
                 ) : (
-                  <Text style={[styles.primaryBtnText, { color: colors.background }]}>인증 완료</Text>
+                  <Text style={[styles.primaryBtnText, { color: colors.primaryForeground }]}>인증 완료</Text>
                 )}
               </Pressable>
 
@@ -109,7 +113,11 @@ export default function SignUpScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={["top", "bottom"]}>
       <ScrollView style={styles.scrollOuter} contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
         <View style={styles.brand}>
-          <Text style={[styles.brandLogo, { color: colors.foreground }]}>링킷</Text>
+          <Image
+            source={require("@/assets/images/logo.png")}
+            style={styles.brandLogo}
+            resizeMode="contain"
+          />
           <Text style={[styles.brandTag, { color: colors.mutedForeground }]}>나만의 다꾸 다이어리 시작하기</Text>
         </View>
 
@@ -150,12 +158,12 @@ export default function SignUpScreen() {
             <Pressable
               onPress={handleSubmit}
               disabled={!canSubmit}
-              style={[styles.primaryBtn, { backgroundColor: colors.foreground, opacity: canSubmit ? 1 : 0.4 }]}
+              style={[styles.primaryBtn, { backgroundColor: colors.primary, opacity: canSubmit ? 1 : 0.4 }]}
             >
               {isLoading ? (
-                <ActivityIndicator color={colors.background} />
+                <ActivityIndicator color={colors.primaryForeground} />
               ) : (
-                <Text style={[styles.primaryBtnText, { color: colors.background }]}>인증코드 받기</Text>
+                <Text style={[styles.primaryBtnText, { color: colors.primaryForeground }]}>인증코드 받기</Text>
               )}
             </Pressable>
 
@@ -181,7 +189,7 @@ const styles = StyleSheet.create({
   scrollOuter: { flex: 1 },
   scroll: { padding: 24, paddingTop: 60, gap: 24, flexGrow: 1 },
   brand: { alignItems: "center", gap: 6 },
-  brandLogo: { fontFamily: "BlackHanSans_400Regular", fontSize: 56, letterSpacing: -1 },
+  brandLogo: { width: 180, height: 120 },
   brandTag: { fontFamily: "NotoSansKR_500Medium", fontSize: 14 },
   card: { marginTop: 8 },
   cardInner: { padding: 22, gap: 8 },
