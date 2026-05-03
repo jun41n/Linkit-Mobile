@@ -24,6 +24,22 @@ export interface PlacedText {
   fontId?: string;
 }
 
+export type PhotoFrame = "none" | "polaroid" | "rounded" | "circle" | "sticker" | "tape";
+
+export interface PlacedPhoto {
+  id: string;
+  uri: string;
+  x: number;
+  y: number;
+  widthPct: number;
+  aspectRatio: number;
+  scale: number;
+  rotation: number;
+  frame: PhotoFrame;
+}
+
+export type PaperPattern = "plain" | "grid" | "dotted" | "lined";
+
 export interface DiaryEntry {
   id: string;
   diaryId: string;
@@ -35,8 +51,10 @@ export interface DiaryEntry {
   videoUri?: string;
   isVideo?: boolean;
   bgColor?: string;
+  paperPattern?: PaperPattern;
   stickers: PlacedSticker[];
   texts: PlacedText[];
+  photos?: PlacedPhoto[];
 }
 
 export interface Diary {

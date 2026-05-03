@@ -13,13 +13,65 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useDiaries } from "@/context/DiariesContext";
+import { PhotoFrame, PlacedPhoto, useDiaries } from "@/context/DiariesContext";
 import { getFontFamily } from "@/constants/fonts";
 import { useColors } from "@/hooks/useColors";
 
 function formatFull(iso: string) {
   const d = new Date(iso);
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+
+function frameWrap(frame: PhotoFrame) {
+  switch (frame) {
+    case "polaroid":
+      return { backgroundColor: "white", padding: 8, paddingBottom: 28, borderRadius: 4 };
+    case "sticker":
+      return { backgroundColor: "white", padding: 4, borderRadius: 12 };
+    default:
+      return {};
+  }
+}
+function frameImage(frame: PhotoFrame, w: number, h: number) {
+  switch (frame) {
+    case "rounded":
+      return { borderRadius: 16 };
+    case "circle":
+      return { borderRadius: Math.max(w, h) };
+    case "sticker":
+      return { borderRadius: 8 };
+    case "polaroid":
+      return { borderRadius: 2 };
+    default:
+      return { borderRadius: 4 };
+  }
+}
+
+function PhotoView({ photo, canvasW, canvasH }: { photo: PlacedPhoto; canvasW: number; canvasH: number }) {
+  const baseW = (photo.widthPct / 100) * canvasW;
+  const baseH = baseW * (photo.aspectRatio || 1);
+  const isCircle = photo.frame === "circle";
+  const renderH = isCircle ? baseW : baseH;
+  return (
+    <View
+      style={{
+        position: "absolute",
+        left: (photo.x / 100) * canvasW - baseW / 2,
+        top: (photo.y / 100) * canvasH - renderH / 2,
+        width: baseW,
+        height: renderH,
+        transform: [{ scale: photo.scale }, { rotate: `${photo.rotation}deg` }],
+      }}
+    >
+      <View style={[{ width: "100%", height: "100%" }, frameWrap(photo.frame) as any]}>
+        <Image
+          source={{ uri: photo.uri }}
+          style={[{ width: "100%", height: "100%" }, frameImage(photo.frame, baseW, renderH) as any]}
+          resizeMode="cover"
+        />
+      </View>
+    </View>
+  );
 }
 
 export default function EntryDetailScreen() {
@@ -43,6 +95,7 @@ export default function EntryDetailScreen() {
   const diary = getDiary(entry.diaryId);
   const canvasWidth = width - 32;
   const canvasHeight = entry.isVideo ? canvasWidth * 1.6 : canvasWidth * 1.2;
+  const photos = entry.photos ?? [];
 
   const onDelete = () => {
     Alert.alert("삭제할까요?", "이 기록은 복구할 수 없어요.", [
@@ -86,7 +139,12 @@ export default function EntryDetailScreen() {
             },
           ]}
         >
-          {entry.photoUri && <Image source={{ uri: entry.photoUri }} style={[styles.photo, { width: canvasWidth, height: canvasHeight }]} />}
+          {entry.photoUri && photos.length === 0 && (
+            <Image source={{ uri: entry.photoUri }} style={[styles.photo, { width: canvasWidth, height: canvasHeight }]} />
+          )}
+          {photos.map((p) => (
+            <PhotoView key={p.id} photo={p} canvasW={canvasWidth} canvasH={canvasHeight} />
+          ))}
           {entry.stickers.map((s) => (
             <Text
               key={s.id}

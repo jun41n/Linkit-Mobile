@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
+import { Image as RNImage } from "react-native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
@@ -19,7 +20,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StickerCanvas } from "@/components/StickerCanvas";
 import { StickerDrawer } from "@/components/StickerDrawer";
 import { DIARY_FONTS, DEFAULT_DIARY_FONT, getFontFamily } from "@/constants/fonts";
-import { PlacedSticker, PlacedText, useDiaries } from "@/context/DiariesContext";
+import {
+  PhotoFrame,
+  PlacedPhoto,
+  PlacedSticker,
+  PlacedText,
+  useDiaries,
+} from "@/context/DiariesContext";
 import { useColors } from "@/hooks/useColors";
 
 const BG_COLORS = [
@@ -35,8 +42,27 @@ const BG_COLORS = [
 
 const TEXT_COLORS = ["#2A2520", "#F46A6A", "#5C7CFA", "#37B86F", "#E2A23B", "#9C5CD4"];
 
+const FRAMES: { key: PhotoFrame; label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
+  { key: "polaroid", label: "폴라로이드", icon: "image-outline" },
+  { key: "sticker", label: "스티커컷", icon: "scan-outline" },
+  { key: "rounded", label: "둥근", icon: "square-outline" },
+  { key: "circle", label: "원형", icon: "ellipse-outline" },
+  { key: "tape", label: "테이프", icon: "ribbon-outline" },
+  { key: "none", label: "원본", icon: "crop-outline" },
+];
+
 function uid() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 9);
+}
+
+function getImageAspect(uri: string): Promise<number> {
+  return new Promise((resolve) => {
+    RNImage.getSize(
+      uri,
+      (w, h) => resolve(h / w || 1),
+      () => resolve(1)
+    );
+  });
 }
 
 export default function NewEntryScreen() {
@@ -51,28 +77,46 @@ export default function NewEntryScreen() {
 
   const [diaryId, setDiaryId] = useState(initialDiaryId);
   const [body, setBody] = useState("");
-  const [photoUri, setPhotoUri] = useState<string | undefined>();
+  const [legacyVideoUri, setLegacyVideoUri] = useState<string | undefined>();
   const [bgColor, setBgColor] = useState(BG_COLORS[0]);
+  const [photos, setPhotos] = useState<PlacedPhoto[]>([]);
   const [stickers, setStickers] = useState<PlacedSticker[]>([]);
   const [texts, setTexts] = useState<PlacedText[]>([]);
-  const [activeTool, setActiveTool] = useState<"write" | "decorate" | "bg">("write");
+  const [activeTool, setActiveTool] = useState<"write" | "photo" | "decorate" | "bg">("write");
   const [textInput, setTextInput] = useState("");
   const [textColor, setTextColor] = useState(TEXT_COLORS[0]);
   const [bodyFontId, setBodyFontId] = useState<string>("noto_sans");
   const [stickerFontId, setStickerFontId] = useState<string>(DEFAULT_DIARY_FONT.id);
+  const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>(null);
 
   const canvasWidth = width - 32;
   const canvasHeight = isVideoMode ? canvasWidth * 1.6 : canvasWidth * 1.2;
 
   const selectedDiary = diaries.find((d) => d.id === diaryId);
+  const selectedPhoto = photos.find((p) => p.id === selectedPhotoId) ?? null;
 
   const pickPhoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 0.8,
+      quality: 0.85,
+      allowsMultipleSelection: true,
+      selectionLimit: 4,
     });
-    if (!result.canceled && result.assets[0]) {
-      setPhotoUri(result.assets[0].uri);
+    if (result.canceled) return;
+    for (const asset of result.assets ?? []) {
+      const aspect = await getImageAspect(asset.uri);
+      const newPhoto: PlacedPhoto = {
+        id: uid(),
+        uri: asset.uri,
+        x: 35 + Math.random() * 30,
+        y: 30 + Math.random() * 35,
+        widthPct: 42,
+        aspectRatio: aspect,
+        scale: 1,
+        rotation: -8 + Math.random() * 16,
+        frame: "polaroid",
+      };
+      setPhotos((prev) => [...prev, newPhoto]);
     }
   };
 
@@ -82,9 +126,18 @@ export default function NewEntryScreen() {
       quality: 0.8,
     });
     if (!result.canceled && result.assets[0]) {
-      setPhotoUri(result.assets[0].uri);
+      setLegacyVideoUri(result.assets[0].uri);
     }
   };
+
+  const updatePhoto = (id: string, u: Partial<PlacedPhoto>) => {
+    setPhotos((prev) => prev.map((p) => (p.id === id ? { ...p, ...u } : p)));
+  };
+  const removePhoto = (id: string) => {
+    setPhotos((prev) => prev.filter((p) => p.id !== id));
+    if (selectedPhotoId === id) setSelectedPhotoId(null);
+  };
+  const setPhotoFrame = (id: string, frame: PhotoFrame) => updatePhoto(id, { frame });
 
   const addSticker = (emoji: string, stickerId: string) => {
     setStickers((prev) => [
@@ -142,12 +195,13 @@ export default function NewEntryScreen() {
     await addEntry({
       diaryId,
       body,
-      photoUri,
       bgColor,
+      photos,
       stickers,
       texts,
       isVideo: isVideoMode,
-      videoUri: isVideoMode ? photoUri : undefined,
+      videoUri: isVideoMode ? legacyVideoUri : undefined,
+      photoUri: undefined,
     });
     router.back();
   };
@@ -155,6 +209,7 @@ export default function NewEntryScreen() {
   const tools = useMemo(
     () => [
       { key: "write" as const, label: "글", icon: "create-outline" as const },
+      { key: "photo" as const, label: "사진", icon: "image-outline" as const },
       { key: "decorate" as const, label: "다꾸", icon: "color-palette-outline" as const },
       { key: "bg" as const, label: "배경", icon: "color-fill-outline" as const },
     ],
@@ -191,43 +246,81 @@ export default function NewEntryScreen() {
               width={canvasWidth}
               height={canvasHeight}
               bgColor={bgColor}
-              photoUri={photoUri}
+              photos={photos}
               stickers={stickers}
               texts={texts}
+              onUpdatePhoto={updatePhoto}
+              onRemovePhoto={removePhoto}
               onUpdateSticker={updateSticker}
               onRemoveSticker={removeSticker}
               onUpdateText={updateText}
               onRemoveText={removeText}
+              onSelectPhoto={setSelectedPhotoId}
+              selectedPhotoId={selectedPhotoId}
             />
           </View>
 
-          <View style={styles.actionRow}>
-            <Pressable onPress={isVideoMode ? pickVideo : pickPhoto} style={[styles.actionBtn, { borderColor: colors.border, backgroundColor: colors.card }]}>
-              <Ionicons name={isVideoMode ? "videocam" : "image"} size={18} color={colors.foreground} />
-              <Text style={[styles.actionText, { color: colors.foreground }]}>
-                {isVideoMode ? "영상" : "사진"}
+          {selectedPhoto && (
+            <View style={[styles.frameBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <Text style={[styles.frameBarTitle, { color: colors.mutedForeground }]}>사진 프레임</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.frameRow}>
+                {FRAMES.map((f) => {
+                  const active = selectedPhoto.frame === f.key;
+                  return (
+                    <Pressable
+                      key={f.key}
+                      onPress={() => setPhotoFrame(selectedPhoto.id, f.key)}
+                      style={[
+                        styles.frameChip,
+                        {
+                          backgroundColor: active ? colors.foreground : colors.muted,
+                          borderColor: active ? colors.foreground : colors.border,
+                        },
+                      ]}
+                    >
+                      <Ionicons name={f.icon} size={14} color={active ? colors.background : colors.foreground} />
+                      <Text
+                        style={{
+                          fontFamily: "NotoSansKR_500Medium",
+                          color: active ? colors.background : colors.foreground,
+                          fontSize: 12,
+                        }}
+                      >
+                        {f.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+              <Text style={[styles.frameHint, { color: colors.mutedForeground }]}>
+                두 손가락으로 크기·회전 · 한 손가락으로 이동
               </Text>
-            </Pressable>
-            {photoUri && (
-              <Pressable onPress={() => setPhotoUri(undefined)} style={[styles.actionBtn, { borderColor: colors.border, backgroundColor: colors.card }]}>
-                <Ionicons name="trash-outline" size={18} color={colors.destructive} />
-                <Text style={[styles.actionText, { color: colors.destructive }]}>제거</Text>
-              </Pressable>
-            )}
-            <View style={{ flex: 1 }} />
-            {diaries.length > 1 && (
-              <Pressable
-                onPress={() => {
-                  const idx = diaries.findIndex((d) => d.id === diaryId);
-                  setDiaryId(diaries[(idx + 1) % diaries.length].id);
-                }}
-                style={[styles.actionBtn, { borderColor: colors.border, backgroundColor: colors.card }]}
-              >
-                <Ionicons name="swap-horizontal" size={18} color={colors.foreground} />
-                <Text style={[styles.actionText, { color: colors.foreground }]}>다이어리 변경</Text>
-              </Pressable>
-            )}
-          </View>
+            </View>
+          )}
+
+          {activeTool === "photo" && (
+            <View style={[styles.writeBox, { backgroundColor: colors.card, borderColor: colors.border, gap: 12 }]}>
+              <View style={styles.fontSectionRow}>
+                <Ionicons name="images-outline" size={14} color={colors.mutedForeground} />
+                <Text style={[styles.fontSectionLabel, { color: colors.mutedForeground }]}>사진 ({photos.length}/10)</Text>
+              </View>
+              <View style={styles.actionRow}>
+                <Pressable onPress={pickPhoto} style={[styles.actionBtn, { borderColor: colors.border, backgroundColor: colors.muted }]}>
+                  <Ionicons name="add" size={16} color={colors.foreground} />
+                  <Text style={[styles.actionText, { color: colors.foreground }]}>사진 추가</Text>
+                </Pressable>
+                {isVideoMode && (
+                  <Pressable onPress={pickVideo} style={[styles.actionBtn, { borderColor: colors.border, backgroundColor: colors.muted }]}>
+                    <Ionicons name="videocam" size={16} color={colors.foreground} />
+                    <Text style={[styles.actionText, { color: colors.foreground }]}>영상</Text>
+                  </Pressable>
+                )}
+              </View>
+              <Text style={[styles.frameHint, { color: colors.mutedForeground }]}>
+                사진을 누르면 프레임을 바꿀 수 있어요. 폴라로이드/스티커컷/원형 등 진짜 다꾸 느낌으로 꾸며보세요.
+              </Text>
+            </View>
+          )}
 
           {activeTool === "write" && (
             <View style={[styles.writeBox, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -353,6 +446,19 @@ export default function NewEntryScreen() {
             </View>
           )}
 
+          {diaries.length > 1 && (
+            <Pressable
+              onPress={() => {
+                const idx = diaries.findIndex((d) => d.id === diaryId);
+                setDiaryId(diaries[(idx + 1) % diaries.length].id);
+              }}
+              style={[styles.actionBtn, { borderColor: colors.border, backgroundColor: colors.card, alignSelf: "flex-start" }]}
+            >
+              <Ionicons name="swap-horizontal" size={18} color={colors.foreground} />
+              <Text style={[styles.actionText, { color: colors.foreground }]}>다이어리 변경</Text>
+            </Pressable>
+          )}
+
           <View style={{ height: 12 }} />
         </ScrollView>
 
@@ -423,6 +529,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   actionText: { fontFamily: "NotoSansKR_500Medium", fontSize: 13 },
+  frameBar: { borderRadius: 16, borderWidth: 1, padding: 12, gap: 8 },
+  frameBarTitle: { fontFamily: "NotoSansKR_500Medium", fontSize: 11, letterSpacing: 0.3 },
+  frameRow: { gap: 8, paddingVertical: 4 },
+  frameChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 999,
+    borderWidth: 1,
+  },
+  frameHint: { fontFamily: "NotoSansKR_400Regular", fontSize: 11 },
   writeBox: { borderRadius: 16, borderWidth: 1, padding: 14, gap: 10 },
   writeInput: { minHeight: 90, fontSize: 16, lineHeight: 24, textAlignVertical: "top" },
   dividerH: { height: 1, marginVertical: 4 },
