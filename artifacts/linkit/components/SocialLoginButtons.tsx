@@ -8,18 +8,34 @@ import { useColors } from "@/hooks/useColors";
 
 WebBrowser.maybeCompleteAuthSession();
 
-type Provider = "kakao" | "google" | "naver" | "apple";
+type Provider =
+  | "kakao"
+  | "naver"
+  | "google"
+  | "apple"
+  | "instagram"
+  | "facebook"
+  | "x";
 
 const PROVIDER_META: Record<
   Provider,
-  { label: string; bg: string; fg: string; mark: string; markColor?: string; strategy: string }
+  {
+    label: string;
+    bg: string;
+    fg: string;
+    mark: string;
+    markColor?: string;
+    strategy: string;
+    custom?: boolean;
+  }
 > = {
   kakao: {
     label: "카카오로 로그인",
     bg: "#FEE500",
     fg: "#191600",
-    mark: "K",
+    mark: "💬",
     strategy: "oauth_custom_kakao",
+    custom: true,
   },
   naver: {
     label: "네이버로 로그인",
@@ -28,6 +44,7 @@ const PROVIDER_META: Record<
     mark: "N",
     markColor: "#FFFFFF",
     strategy: "oauth_custom_naver",
+    custom: true,
   },
   google: {
     label: "Google로 로그인",
@@ -43,6 +60,29 @@ const PROVIDER_META: Record<
     fg: "#FFFFFF",
     mark: "",
     strategy: "oauth_apple",
+  },
+  instagram: {
+    label: "Instagram으로 로그인",
+    bg: "#E4405F",
+    fg: "#FFFFFF",
+    mark: "📷",
+    strategy: "oauth_custom_instagram",
+    custom: true,
+  },
+  facebook: {
+    label: "Facebook으로 로그인",
+    bg: "#1877F2",
+    fg: "#FFFFFF",
+    mark: "f",
+    markColor: "#FFFFFF",
+    strategy: "oauth_facebook",
+  },
+  x: {
+    label: "X(트위터)로 로그인",
+    bg: "#000000",
+    fg: "#FFFFFF",
+    mark: "𝕏",
+    strategy: "oauth_x",
   },
 };
 
@@ -71,8 +111,8 @@ export function SocialLoginButtons({ context = "signin" }: { context?: "signin" 
       const msg = e instanceof Error ? e.message : String(e);
       Alert.alert(
         `${meta.label} 사용 불가`,
-        provider === "kakao" || provider === "naver"
-          ? "관리자가 Clerk 대시보드에서 해당 OAuth 공급자를 활성화해야 사용할 수 있어요."
+        meta.custom
+          ? "관리자가 Clerk 대시보드에서 해당 OAuth 공급자(Custom Provider)를 활성화해야 사용할 수 있어요."
           : msg,
       );
     }
@@ -80,7 +120,14 @@ export function SocialLoginButtons({ context = "signin" }: { context?: "signin" 
 
   const verb = context === "signup" ? "시작하기" : "로그인";
 
-  const providers: Provider[] = ["kakao", "naver", "google"];
+  const providers: Provider[] = [
+    "kakao",
+    "naver",
+    "google",
+    "facebook",
+    "instagram",
+    "x",
+  ];
   if (Platform.OS === "ios") providers.push("apple");
 
   return (
@@ -109,20 +156,14 @@ export function SocialLoginButtons({ context = "signin" }: { context?: "signin" 
             ]}
           >
             <View style={styles.iconBox}>
-              {p === "apple" ? (
-                <Text style={[styles.appleIcon, { color: meta.fg }]}></Text>
-              ) : p === "kakao" ? (
-                <Text style={[styles.kakaoIcon, { color: meta.fg }]}>💬</Text>
-              ) : (
-                <Text
-                  style={[
-                    styles.markText,
-                    { color: meta.markColor ?? meta.fg },
-                  ]}
-                >
-                  {meta.mark}
-                </Text>
-              )}
+              <Text
+                style={[
+                  p === "apple" || p === "x" ? styles.appleIcon : styles.markText,
+                  { color: meta.markColor ?? meta.fg },
+                ]}
+              >
+                {meta.mark}
+              </Text>
             </View>
             <Text style={[styles.btnLabel, { color: meta.fg }]}>
               {meta.label.replace("로 로그인", `로 ${verb}`)}
