@@ -8,9 +8,343 @@
 import * as zod from "zod";
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * @summary List the current user's diaries
+ */
+export const ListDiariesResponseItem = zod.object({
+  id: zod.string(),
+  name: zod.string(),
+  kind: zod.enum(["SOLO", "SHARED", "FAVORITE"]),
+  color: zod.string(),
+  members: zod.array(zod.string()),
+  coverNumber: zod.string().nullish(),
+  createdAt: zod.coerce.date(),
+  updatedAt: zod.coerce.date(),
+});
+export const ListDiariesResponse = zod.array(ListDiariesResponseItem);
+
+/**
+ * @summary Create a diary
+ */
+export const CreateDiaryBody = zod.object({
+  id: zod.string(),
+  name: zod.string(),
+  kind: zod.enum(["SOLO", "SHARED", "FAVORITE"]),
+  color: zod.string(),
+  members: zod.array(zod.string()).optional(),
+  coverNumber: zod.string().nullish(),
+});
+
+/**
+ * @summary Update a diary
+ */
+export const UpdateDiaryParams = zod.object({
+  id: zod.coerce.string(),
+});
+
+export const UpdateDiaryBody = zod.object({
+  name: zod.string().optional(),
+  kind: zod.enum(["SOLO", "SHARED", "FAVORITE"]).optional(),
+  color: zod.string().optional(),
+  members: zod.array(zod.string()).optional(),
+  coverNumber: zod.string().nullish(),
+});
+
+export const UpdateDiaryResponse = zod.object({
+  id: zod.string(),
+  name: zod.string(),
+  kind: zod.enum(["SOLO", "SHARED", "FAVORITE"]),
+  color: zod.string(),
+  members: zod.array(zod.string()),
+  coverNumber: zod.string().nullish(),
+  createdAt: zod.coerce.date(),
+  updatedAt: zod.coerce.date(),
+});
+
+/**
+ * @summary Delete a diary (and all its entries)
+ */
+export const DeleteDiaryParams = zod.object({
+  id: zod.coerce.string(),
+});
+
+/**
+ * @summary List the current user's entries
+ */
+export const ListEntriesQueryParams = zod.object({
+  diaryId: zod.coerce.string().optional(),
+});
+
+export const ListEntriesResponseItem = zod.object({
+  id: zod.string(),
+  diaryId: zod.string(),
+  title: zod.string().nullish(),
+  body: zod.string(),
+  mood: zod.string().nullish(),
+  photoUri: zod.string().nullish(),
+  videoUri: zod.string().nullish(),
+  isVideo: zod.boolean(),
+  bgColor: zod.string().nullish(),
+  paperPattern: zod.string().nullish(),
+  stickers: zod.array(
+    zod.object({
+      id: zod.string(),
+      stickerId: zod.string(),
+      emoji: zod.string(),
+      x: zod.number(),
+      y: zod.number(),
+      scale: zod.number(),
+      rotation: zod.number(),
+    }),
+  ),
+  texts: zod.array(
+    zod.object({
+      id: zod.string(),
+      text: zod.string(),
+      x: zod.number(),
+      y: zod.number(),
+      color: zod.string(),
+      fontSize: zod.number(),
+      fontId: zod.string().nullish(),
+    }),
+  ),
+  photos: zod.array(
+    zod.object({
+      id: zod.string(),
+      uri: zod.string(),
+      x: zod.number(),
+      y: zod.number(),
+      widthPct: zod.number(),
+      aspectRatio: zod.number(),
+      scale: zod.number(),
+      rotation: zod.number(),
+      frame: zod.enum([
+        "none",
+        "polaroid",
+        "rounded",
+        "circle",
+        "sticker",
+        "tape",
+      ]),
+    }),
+  ),
+  createdAt: zod.coerce.date(),
+  updatedAt: zod.coerce.date(),
+});
+export const ListEntriesResponse = zod.array(ListEntriesResponseItem);
+
+/**
+ * @summary Create an entry
+ */
+export const CreateEntryBody = zod.object({
+  id: zod.string(),
+  diaryId: zod.string(),
+  title: zod.string().nullish(),
+  body: zod.string(),
+  mood: zod.string().nullish(),
+  photoUri: zod.string().nullish(),
+  videoUri: zod.string().nullish(),
+  isVideo: zod.boolean().optional(),
+  bgColor: zod.string().nullish(),
+  paperPattern: zod.string().nullish(),
+  stickers: zod
+    .array(
+      zod.object({
+        id: zod.string(),
+        stickerId: zod.string(),
+        emoji: zod.string(),
+        x: zod.number(),
+        y: zod.number(),
+        scale: zod.number(),
+        rotation: zod.number(),
+      }),
+    )
+    .optional(),
+  texts: zod
+    .array(
+      zod.object({
+        id: zod.string(),
+        text: zod.string(),
+        x: zod.number(),
+        y: zod.number(),
+        color: zod.string(),
+        fontSize: zod.number(),
+        fontId: zod.string().nullish(),
+      }),
+    )
+    .optional(),
+  photos: zod
+    .array(
+      zod.object({
+        id: zod.string(),
+        uri: zod.string(),
+        x: zod.number(),
+        y: zod.number(),
+        widthPct: zod.number(),
+        aspectRatio: zod.number(),
+        scale: zod.number(),
+        rotation: zod.number(),
+        frame: zod.enum([
+          "none",
+          "polaroid",
+          "rounded",
+          "circle",
+          "sticker",
+          "tape",
+        ]),
+      }),
+    )
+    .optional(),
+});
+
+/**
+ * @summary Update an entry
+ */
+export const UpdateEntryParams = zod.object({
+  id: zod.coerce.string(),
+});
+
+export const UpdateEntryBody = zod.object({
+  title: zod.string().nullish(),
+  body: zod.string().optional(),
+  mood: zod.string().nullish(),
+  photoUri: zod.string().nullish(),
+  videoUri: zod.string().nullish(),
+  isVideo: zod.boolean().optional(),
+  bgColor: zod.string().nullish(),
+  paperPattern: zod.string().nullish(),
+  stickers: zod
+    .array(
+      zod.object({
+        id: zod.string(),
+        stickerId: zod.string(),
+        emoji: zod.string(),
+        x: zod.number(),
+        y: zod.number(),
+        scale: zod.number(),
+        rotation: zod.number(),
+      }),
+    )
+    .optional(),
+  texts: zod
+    .array(
+      zod.object({
+        id: zod.string(),
+        text: zod.string(),
+        x: zod.number(),
+        y: zod.number(),
+        color: zod.string(),
+        fontSize: zod.number(),
+        fontId: zod.string().nullish(),
+      }),
+    )
+    .optional(),
+  photos: zod
+    .array(
+      zod.object({
+        id: zod.string(),
+        uri: zod.string(),
+        x: zod.number(),
+        y: zod.number(),
+        widthPct: zod.number(),
+        aspectRatio: zod.number(),
+        scale: zod.number(),
+        rotation: zod.number(),
+        frame: zod.enum([
+          "none",
+          "polaroid",
+          "rounded",
+          "circle",
+          "sticker",
+          "tape",
+        ]),
+      }),
+    )
+    .optional(),
+});
+
+export const UpdateEntryResponse = zod.object({
+  id: zod.string(),
+  diaryId: zod.string(),
+  title: zod.string().nullish(),
+  body: zod.string(),
+  mood: zod.string().nullish(),
+  photoUri: zod.string().nullish(),
+  videoUri: zod.string().nullish(),
+  isVideo: zod.boolean(),
+  bgColor: zod.string().nullish(),
+  paperPattern: zod.string().nullish(),
+  stickers: zod.array(
+    zod.object({
+      id: zod.string(),
+      stickerId: zod.string(),
+      emoji: zod.string(),
+      x: zod.number(),
+      y: zod.number(),
+      scale: zod.number(),
+      rotation: zod.number(),
+    }),
+  ),
+  texts: zod.array(
+    zod.object({
+      id: zod.string(),
+      text: zod.string(),
+      x: zod.number(),
+      y: zod.number(),
+      color: zod.string(),
+      fontSize: zod.number(),
+      fontId: zod.string().nullish(),
+    }),
+  ),
+  photos: zod.array(
+    zod.object({
+      id: zod.string(),
+      uri: zod.string(),
+      x: zod.number(),
+      y: zod.number(),
+      widthPct: zod.number(),
+      aspectRatio: zod.number(),
+      scale: zod.number(),
+      rotation: zod.number(),
+      frame: zod.enum([
+        "none",
+        "polaroid",
+        "rounded",
+        "circle",
+        "sticker",
+        "tape",
+      ]),
+    }),
+  ),
+  createdAt: zod.coerce.date(),
+  updatedAt: zod.coerce.date(),
+});
+
+/**
+ * @summary Delete an entry
+ */
+export const DeleteEntryParams = zod.object({
+  id: zod.coerce.string(),
+});
+
+/**
+ * @summary List the current user's owned sticker pack IDs
+ */
+export const ListOwnedPacksResponseItem = zod.string();
+export const ListOwnedPacksResponse = zod.array(ListOwnedPacksResponseItem);
+
+/**
+ * @summary Add a sticker pack to the current user's library
+ */
+export const AddOwnedPackBody = zod.object({
+  packId: zod.string(),
+});
+
+export const AddOwnedPackResponseItem = zod.string();
+export const AddOwnedPackResponse = zod.array(AddOwnedPackResponseItem);

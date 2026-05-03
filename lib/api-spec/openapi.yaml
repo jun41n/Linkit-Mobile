@@ -9,14 +9,15 @@ servers:
     description: Base API path
 tags:
   - name: health
-    description: Health operations
+  - name: diaries
+  - name: entries
+  - name: stickers
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +25,187 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /diaries:
+    get:
+      operationId: listDiaries
+      tags: [diaries]
+      summary: List the current user's diaries
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Diary"
+    post:
+      operationId: createDiary
+      tags: [diaries]
+      summary: Create a diary
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDiaryBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Diary"
+
+  /diaries/{id}:
+    patch:
+      operationId: updateDiary
+      tags: [diaries]
+      summary: Update a diary
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDiaryBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Diary"
+    delete:
+      operationId: deleteDiary
+      tags: [diaries]
+      summary: Delete a diary (and all its entries)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  /entries:
+    get:
+      operationId: listEntries
+      tags: [entries]
+      summary: List the current user's entries
+      parameters:
+        - in: query
+          name: diaryId
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Entry"
+    post:
+      operationId: createEntry
+      tags: [entries]
+      summary: Create an entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEntryBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entry"
+
+  /entries/{id}:
+    patch:
+      operationId: updateEntry
+      tags: [entries]
+      summary: Update an entry
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEntryBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entry"
+    delete:
+      operationId: deleteEntry
+      tags: [entries]
+      summary: Delete an entry
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  /owned-packs:
+    get:
+      operationId: listOwnedPacks
+      tags: [stickers]
+      summary: List the current user's owned sticker pack IDs
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+    post:
+      operationId: addOwnedPack
+      tags: [stickers]
+      summary: Add a sticker pack to the current user's library
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddOwnedPackBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +213,189 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    PlacedSticker:
+      type: object
+      properties:
+        id: { type: string }
+        stickerId: { type: string }
+        emoji: { type: string }
+        x: { type: number }
+        y: { type: number }
+        scale: { type: number }
+        rotation: { type: number }
+      required: [id, stickerId, emoji, x, y, scale, rotation]
+
+    PlacedText:
+      type: object
+      properties:
+        id: { type: string }
+        text: { type: string }
+        x: { type: number }
+        y: { type: number }
+        color: { type: string }
+        fontSize: { type: number }
+        fontId:
+          type: ["string", "null"]
+      required: [id, text, x, y, color, fontSize]
+
+    PlacedPhoto:
+      type: object
+      properties:
+        id: { type: string }
+        uri: { type: string }
+        x: { type: number }
+        y: { type: number }
+        widthPct: { type: number }
+        aspectRatio: { type: number }
+        scale: { type: number }
+        rotation: { type: number }
+        frame:
+          type: string
+          enum: [none, polaroid, rounded, circle, sticker, tape]
+      required: [id, uri, x, y, widthPct, aspectRatio, scale, rotation, frame]
+
+    Diary:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        kind:
+          type: string
+          enum: [SOLO, SHARED, FAVORITE]
+        color: { type: string }
+        members:
+          type: array
+          items: { type: string }
+        coverNumber:
+          type: ["string", "null"]
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+      required: [id, name, kind, color, members, createdAt, updatedAt]
+
+    CreateDiaryBody:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        kind:
+          type: string
+          enum: [SOLO, SHARED, FAVORITE]
+        color: { type: string }
+        members:
+          type: array
+          items: { type: string }
+        coverNumber:
+          type: ["string", "null"]
+      required: [id, name, kind, color]
+
+    UpdateDiaryBody:
+      type: object
+      properties:
+        name: { type: string }
+        kind:
+          type: string
+          enum: [SOLO, SHARED, FAVORITE]
+        color: { type: string }
+        members:
+          type: array
+          items: { type: string }
+        coverNumber:
+          type: ["string", "null"]
+
+    Entry:
+      type: object
+      properties:
+        id: { type: string }
+        diaryId: { type: string }
+        title:
+          type: ["string", "null"]
+        body: { type: string }
+        mood:
+          type: ["string", "null"]
+        photoUri:
+          type: ["string", "null"]
+        videoUri:
+          type: ["string", "null"]
+        isVideo: { type: boolean }
+        bgColor:
+          type: ["string", "null"]
+        paperPattern:
+          type: ["string", "null"]
+        stickers:
+          type: array
+          items: { $ref: "#/components/schemas/PlacedSticker" }
+        texts:
+          type: array
+          items: { $ref: "#/components/schemas/PlacedText" }
+        photos:
+          type: array
+          items: { $ref: "#/components/schemas/PlacedPhoto" }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+      required:
+        [id, diaryId, body, isVideo, stickers, texts, photos, createdAt, updatedAt]
+
+    CreateEntryBody:
+      type: object
+      properties:
+        id: { type: string }
+        diaryId: { type: string }
+        title:
+          type: ["string", "null"]
+        body: { type: string }
+        mood:
+          type: ["string", "null"]
+        photoUri:
+          type: ["string", "null"]
+        videoUri:
+          type: ["string", "null"]
+        isVideo: { type: boolean }
+        bgColor:
+          type: ["string", "null"]
+        paperPattern:
+          type: ["string", "null"]
+        stickers:
+          type: array
+          items: { $ref: "#/components/schemas/PlacedSticker" }
+        texts:
+          type: array
+          items: { $ref: "#/components/schemas/PlacedText" }
+        photos:
+          type: array
+          items: { $ref: "#/components/schemas/PlacedPhoto" }
+      required: [id, diaryId, body]
+
+    UpdateEntryBody:
+      type: object
+      properties:
+        title:
+          type: ["string", "null"]
+        body: { type: string }
+        mood:
+          type: ["string", "null"]
+        photoUri:
+          type: ["string", "null"]
+        videoUri:
+          type: ["string", "null"]
+        isVideo: { type: boolean }
+        bgColor:
+          type: ["string", "null"]
+        paperPattern:
+          type: ["string", "null"]
+        stickers:
+          type: array
+          items: { $ref: "#/components/schemas/PlacedSticker" }
+        texts:
+          type: array
+          items: { $ref: "#/components/schemas/PlacedText" }
+        photos:
+          type: array
+          items: { $ref: "#/components/schemas/PlacedPhoto" }
+
+    AddOwnedPackBody:
+      type: object
+      properties:
+        packId: { type: string }
+      required: [packId]

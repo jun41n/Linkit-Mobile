@@ -31,6 +31,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { DiariesProvider } from "@/context/DiariesContext";
 import { StickersProvider } from "@/context/StickersContext";
+import { ApiAuthBridge } from "@/lib/apiClient";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -89,6 +90,7 @@ export default function RootLayout() {
         <SafeAreaProvider>
           <ErrorBoundary>
             <QueryClientProvider client={queryClient}>
+              <ApiAuthBridge />
               <GestureHandlerRootView style={{ flex: 1 }}>
                 <KeyboardProvider>
                   <DiariesProvider>

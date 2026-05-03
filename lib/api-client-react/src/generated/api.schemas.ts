@@ -8,3 +8,179 @@
 export interface HealthStatus {
   status: string;
 }
+
+export interface PlacedSticker {
+  id: string;
+  stickerId: string;
+  emoji: string;
+  x: number;
+  y: number;
+  scale: number;
+  rotation: number;
+}
+
+export interface PlacedText {
+  id: string;
+  text: string;
+  x: number;
+  y: number;
+  color: string;
+  fontSize: number;
+  /** @nullable */
+  fontId?: string | null;
+}
+
+export type PlacedPhotoFrame =
+  (typeof PlacedPhotoFrame)[keyof typeof PlacedPhotoFrame];
+
+export const PlacedPhotoFrame = {
+  none: "none",
+  polaroid: "polaroid",
+  rounded: "rounded",
+  circle: "circle",
+  sticker: "sticker",
+  tape: "tape",
+} as const;
+
+export interface PlacedPhoto {
+  id: string;
+  uri: string;
+  x: number;
+  y: number;
+  widthPct: number;
+  aspectRatio: number;
+  scale: number;
+  rotation: number;
+  frame: PlacedPhotoFrame;
+}
+
+export type DiaryKind = (typeof DiaryKind)[keyof typeof DiaryKind];
+
+export const DiaryKind = {
+  SOLO: "SOLO",
+  SHARED: "SHARED",
+  FAVORITE: "FAVORITE",
+} as const;
+
+export interface Diary {
+  id: string;
+  name: string;
+  kind: DiaryKind;
+  color: string;
+  members: string[];
+  /** @nullable */
+  coverNumber?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type CreateDiaryBodyKind =
+  (typeof CreateDiaryBodyKind)[keyof typeof CreateDiaryBodyKind];
+
+export const CreateDiaryBodyKind = {
+  SOLO: "SOLO",
+  SHARED: "SHARED",
+  FAVORITE: "FAVORITE",
+} as const;
+
+export interface CreateDiaryBody {
+  id: string;
+  name: string;
+  kind: CreateDiaryBodyKind;
+  color: string;
+  members?: string[];
+  /** @nullable */
+  coverNumber?: string | null;
+}
+
+export type UpdateDiaryBodyKind =
+  (typeof UpdateDiaryBodyKind)[keyof typeof UpdateDiaryBodyKind];
+
+export const UpdateDiaryBodyKind = {
+  SOLO: "SOLO",
+  SHARED: "SHARED",
+  FAVORITE: "FAVORITE",
+} as const;
+
+export interface UpdateDiaryBody {
+  name?: string;
+  kind?: UpdateDiaryBodyKind;
+  color?: string;
+  members?: string[];
+  /** @nullable */
+  coverNumber?: string | null;
+}
+
+export interface Entry {
+  id: string;
+  diaryId: string;
+  /** @nullable */
+  title?: string | null;
+  body: string;
+  /** @nullable */
+  mood?: string | null;
+  /** @nullable */
+  photoUri?: string | null;
+  /** @nullable */
+  videoUri?: string | null;
+  isVideo: boolean;
+  /** @nullable */
+  bgColor?: string | null;
+  /** @nullable */
+  paperPattern?: string | null;
+  stickers: PlacedSticker[];
+  texts: PlacedText[];
+  photos: PlacedPhoto[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateEntryBody {
+  id: string;
+  diaryId: string;
+  /** @nullable */
+  title?: string | null;
+  body: string;
+  /** @nullable */
+  mood?: string | null;
+  /** @nullable */
+  photoUri?: string | null;
+  /** @nullable */
+  videoUri?: string | null;
+  isVideo?: boolean;
+  /** @nullable */
+  bgColor?: string | null;
+  /** @nullable */
+  paperPattern?: string | null;
+  stickers?: PlacedSticker[];
+  texts?: PlacedText[];
+  photos?: PlacedPhoto[];
+}
+
+export interface UpdateEntryBody {
+  /** @nullable */
+  title?: string | null;
+  body?: string;
+  /** @nullable */
+  mood?: string | null;
+  /** @nullable */
+  photoUri?: string | null;
+  /** @nullable */
+  videoUri?: string | null;
+  isVideo?: boolean;
+  /** @nullable */
+  bgColor?: string | null;
+  /** @nullable */
+  paperPattern?: string | null;
+  stickers?: PlacedSticker[];
+  texts?: PlacedText[];
+  photos?: PlacedPhoto[];
+}
+
+export interface AddOwnedPackBody {
+  packId: string;
+}
+
+export type ListEntriesParams = {
+  diaryId?: string;
+};

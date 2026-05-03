@@ -1,5 +1,10 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useAuth } from "@clerk/expo";
+import {
+  getListOwnedPacksQueryKey,
+  useAddOwnedPack,
+  useListOwnedPacks,
+} from "@workspace/api-client-react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef } from "react";
 
 export interface Sticker {
   id: string;
@@ -478,52 +483,50 @@ interface StickersContextType {
 
 const StickersContext = createContext<StickersContextType | null>(null);
 
-const OWNED_KEY = "@linkit/owned-packs/v2";
-
 export function StickersProvider({ children }: { children: React.ReactNode }) {
-  const [ownedPackIds, setOwnedPackIds] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const hydratedRef = React.useRef(false);
-  const writeQueueRef = React.useRef<Promise<void>>(Promise.resolve());
+  const { isSignedIn } = useAuth();
+  const ownedQ = useListOwnedPacks({
+    query: {
+      enabled: !!isSignedIn,
+      queryKey: getListOwnedPacksQueryKey(),
+    },
+  });
+  const addOwnedPack = useAddOwnedPack();
 
+  const ownedPackIds: string[] = useMemo(() => ownedQ.data ?? [], [ownedQ.data]);
+  const loading = !!isSignedIn && ownedQ.isLoading;
+
+  // Auto-grant any free packs the user doesn't have yet.
+  const seededRef = useRef(false);
   useEffect(() => {
+    if (!isSignedIn || ownedQ.isLoading || seededRef.current) return;
+    const freeIds = PACKS.filter((p) => !p.isPaid).map((p) => p.id);
+    const missing = freeIds.filter((id) => !ownedPackIds.includes(id));
+    if (missing.length === 0) {
+      seededRef.current = true;
+      return;
+    }
+    seededRef.current = true;
     (async () => {
-      try {
-        const stored = await AsyncStorage.getItem(OWNED_KEY);
-        const freeIds = PACKS.filter((p) => !p.isPaid).map((p) => p.id);
-        const initial = stored ? JSON.parse(stored) : [];
-        const merged = Array.from(new Set([...initial, ...freeIds]));
-        setOwnedPackIds(merged);
-        await AsyncStorage.setItem(OWNED_KEY, JSON.stringify(merged));
-      } catch {}
-      hydratedRef.current = true;
-      setLoading(false);
+      for (const id of missing) {
+        try {
+          await addOwnedPack.mutateAsync({ data: { packId: id } });
+        } catch {}
+      }
+      ownedQ.refetch();
     })();
-  }, []);
+  }, [isSignedIn, ownedQ, ownedPackIds, addOwnedPack]);
 
   const isOwned = useCallback((id: string) => ownedPackIds.includes(id), [ownedPackIds]);
 
-  const purchasePack = useCallback(async (id: string) => {
-    if (!hydratedRef.current) return;
-    let computed: string[] = [];
-    let alreadyOwned = false;
-    setOwnedPackIds((prev) => {
-      if (prev.includes(id)) {
-        alreadyOwned = true;
-        computed = prev;
-        return prev;
-      }
-      computed = [...prev, id];
-      return computed;
-    });
-    if (alreadyOwned) return;
-    const next = writeQueueRef.current.then(
-      () => AsyncStorage.setItem(OWNED_KEY, JSON.stringify(computed)),
-      () => AsyncStorage.setItem(OWNED_KEY, JSON.stringify(computed))
-    );
-    writeQueueRef.current = next.catch(() => {});
-    await next;
-  }, []);
+  const purchasePack = useCallback(
+    async (id: string) => {
+      if (ownedPackIds.includes(id)) return;
+      await addOwnedPack.mutateAsync({ data: { packId: id } });
+      await ownedQ.refetch();
+    },
+    [addOwnedPack, ownedPackIds, ownedQ]
+  );
 
   const ownedStickers = useMemo(
     () => PACKS.filter((p) => ownedPackIds.includes(p.id)).flatMap((p) => p.stickers),

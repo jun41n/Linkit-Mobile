@@ -1,5 +1,18 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useAuth } from "@clerk/expo";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  getListDiariesQueryKey,
+  getListEntriesQueryKey,
+  useCreateDiary,
+  useCreateEntry,
+  useDeleteDiary,
+  useDeleteEntry,
+  useListDiaries,
+  useListEntries,
+  useUpdateDiary,
+  useUpdateEntry,
+} from "@workspace/api-client-react";
+import React, { createContext, useCallback, useContext, useMemo } from "react";
 
 export type DiaryKind = "SOLO" | "SHARED" | "FAVORITE";
 export type DiaryColor = "red" | "mint" | "yellow" | "lavender" | "blue" | "orange";
@@ -71,7 +84,9 @@ interface DiariesContextType {
   diaries: Diary[];
   entries: DiaryEntry[];
   loading: boolean;
-  addDiary: (d: Omit<Diary, "id" | "createdAt" | "members"> & { members?: string[] }) => Promise<Diary>;
+  addDiary: (
+    d: Omit<Diary, "id" | "createdAt" | "members"> & { members?: string[] }
+  ) => Promise<Diary>;
   updateDiary: (id: string, updates: Partial<Diary>) => Promise<void>;
   deleteDiary: (id: string) => Promise<void>;
   toggleFavorite: (id: string) => Promise<void>;
@@ -84,191 +99,232 @@ interface DiariesContextType {
 
 const DiariesContext = createContext<DiariesContextType | null>(null);
 
-const DIARIES_KEY = "@linkit/diaries/v1";
-const ENTRIES_KEY = "@linkit/entries/v1";
-
 function uid() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 9);
 }
 
-const SAMPLE_DIARIES: Diary[] = [
-  {
-    id: "d_seed_1",
-    name: "260427",
-    kind: "SOLO",
-    color: "red",
-    members: ["나"],
-    createdAt: new Date().toISOString(),
-    coverNumber: "260427",
-  },
-  {
-    id: "d_seed_2",
-    name: "가족 교환일기",
-    kind: "SHARED",
-    color: "mint",
-    members: ["나", "엄마", "동생"],
-    createdAt: new Date().toISOString(),
-  },
-];
+function toLocalDiary(d: {
+  id: string;
+  name: string;
+  kind: string;
+  color: string;
+  members: string[];
+  coverNumber?: string | null;
+  createdAt: string | Date;
+}): Diary {
+  return {
+    id: d.id,
+    name: d.name,
+    kind: d.kind as DiaryKind,
+    color: d.color as DiaryColor,
+    members: d.members ?? [],
+    coverNumber: d.coverNumber ?? undefined,
+    createdAt:
+      typeof d.createdAt === "string" ? d.createdAt : d.createdAt.toISOString(),
+  };
+}
+
+function toLocalEntry(e: {
+  id: string;
+  diaryId: string;
+  title?: string | null;
+  body: string;
+  mood?: string | null;
+  photoUri?: string | null;
+  videoUri?: string | null;
+  isVideo: boolean;
+  bgColor?: string | null;
+  paperPattern?: string | null;
+  stickers: PlacedSticker[];
+  texts: PlacedText[];
+  photos: PlacedPhoto[];
+  createdAt: string | Date;
+}): DiaryEntry {
+  return {
+    id: e.id,
+    diaryId: e.diaryId,
+    title: e.title ?? undefined,
+    body: e.body,
+    mood: e.mood ?? undefined,
+    photoUri: e.photoUri ?? undefined,
+    videoUri: e.videoUri ?? undefined,
+    isVideo: e.isVideo,
+    bgColor: e.bgColor ?? undefined,
+    paperPattern: (e.paperPattern as PaperPattern) ?? undefined,
+    stickers: e.stickers ?? [],
+    texts: e.texts ?? [],
+    photos: e.photos ?? [],
+    createdAt:
+      typeof e.createdAt === "string" ? e.createdAt : e.createdAt.toISOString(),
+  };
+}
 
 export function DiariesProvider({ children }: { children: React.ReactNode }) {
-  const [diaries, setDiaries] = useState<Diary[]>([]);
-  const [entries, setEntries] = useState<DiaryEntry[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { isSignedIn } = useAuth();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const [d, e] = await Promise.all([
-          AsyncStorage.getItem(DIARIES_KEY),
-          AsyncStorage.getItem(ENTRIES_KEY),
-        ]);
-        if (d) {
-          setDiaries(JSON.parse(d));
-        } else {
-          setDiaries(SAMPLE_DIARIES);
-          await AsyncStorage.setItem(DIARIES_KEY, JSON.stringify(SAMPLE_DIARIES));
-        }
-        if (e) setEntries(JSON.parse(e));
-      } catch {}
-      setLoading(false);
-    })();
-  }, []);
-
-  const hydratedRef = React.useRef(false);
-  const diariesRef = React.useRef<Diary[]>([]);
-  const entriesRef = React.useRef<DiaryEntry[]>([]);
-  const writeQueueRef = React.useRef<Promise<void>>(Promise.resolve());
-
-  React.useEffect(() => {
-    diariesRef.current = diaries;
-  }, [diaries]);
-  React.useEffect(() => {
-    entriesRef.current = entries;
-  }, [entries]);
-
-  const enqueueWrite = useCallback((fn: () => Promise<void>) => {
-    const next = writeQueueRef.current.then(fn, fn);
-    writeQueueRef.current = next.catch(() => {});
-    return next;
-  }, []);
-
-  const mutateDiaries = useCallback(
-    (mutator: (prev: Diary[]) => Diary[]) => {
-      let computed: Diary[] = diariesRef.current;
-      setDiaries((prev) => {
-        computed = mutator(prev);
-        diariesRef.current = computed;
-        return computed;
-      });
-      return enqueueWrite(() => AsyncStorage.setItem(DIARIES_KEY, JSON.stringify(computed)));
+  const diariesQ = useListDiaries({
+    query: {
+      enabled: !!isSignedIn,
+      queryKey: getListDiariesQueryKey(),
     },
-    [enqueueWrite]
-  );
-
-  const mutateEntries = useCallback(
-    (mutator: (prev: DiaryEntry[]) => DiaryEntry[]) => {
-      let computed: DiaryEntry[] = entriesRef.current;
-      setEntries((prev) => {
-        computed = mutator(prev);
-        entriesRef.current = computed;
-        return computed;
-      });
-      return enqueueWrite(() => AsyncStorage.setItem(ENTRIES_KEY, JSON.stringify(computed)));
-    },
-    [enqueueWrite]
-  );
-
-  const ensureHydrated = useCallback(() => {
-    if (!hydratedRef.current) {
-      throw new Error("DiariesContext is still hydrating");
+  });
+  const entriesQ = useListEntries(
+    {},
+    {
+      query: {
+        enabled: !!isSignedIn,
+        queryKey: getListEntriesQueryKey(),
+      },
     }
-  }, []);
+  );
 
-  React.useEffect(() => {
-    if (!loading) hydratedRef.current = true;
-  }, [loading]);
+  const createDiary = useCreateDiary();
+  const updateDiaryM = useUpdateDiary();
+  const deleteDiaryM = useDeleteDiary();
+  const createEntry = useCreateEntry();
+  const updateEntryM = useUpdateEntry();
+  const deleteEntryM = useDeleteEntry();
+
+  const diaries: Diary[] = useMemo(
+    () => (diariesQ.data ?? []).map((d) => toLocalDiary(d as never)),
+    [diariesQ.data]
+  );
+  const entries: DiaryEntry[] = useMemo(
+    () => (entriesQ.data ?? []).map((e) => toLocalEntry(e as never)),
+    [entriesQ.data]
+  );
+
+  const loading =
+    !!isSignedIn && (diariesQ.isLoading || entriesQ.isLoading);
+
+  const invalidateDiaries = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: getListDiariesQueryKey() });
+  }, [queryClient]);
+  const invalidateEntries = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: getListEntriesQueryKey() });
+  }, [queryClient]);
 
   const addDiary: DiariesContextType["addDiary"] = useCallback(
     async (d) => {
-      ensureHydrated();
-      const newDiary: Diary = {
-        id: uid(),
-        createdAt: new Date().toISOString(),
-        members: d.members ?? ["나"],
-        name: d.name,
-        kind: d.kind,
-        color: d.color,
-        coverNumber: d.coverNumber,
-      };
-      await mutateDiaries((prev) => [newDiary, ...prev]);
-      return newDiary;
+      const id = uid();
+      const created = await createDiary.mutateAsync({
+        data: {
+          id,
+          name: d.name,
+          kind: d.kind,
+          color: d.color,
+          members: d.members ?? ["나"],
+          coverNumber: d.coverNumber ?? null,
+        },
+      });
+      invalidateDiaries();
+      return toLocalDiary(created as never);
     },
-    [mutateDiaries, ensureHydrated]
+    [createDiary, invalidateDiaries]
   );
 
-  const updateDiary = useCallback(
-    async (id: string, updates: Partial<Diary>) => {
-      ensureHydrated();
-      await mutateDiaries((prev) => prev.map((x) => (x.id === id ? { ...x, ...updates } : x)));
+  const updateDiary: DiariesContextType["updateDiary"] = useCallback(
+    async (id, updates) => {
+      const data: Record<string, unknown> = {};
+      if ("name" in updates) data.name = updates.name;
+      if ("kind" in updates) data.kind = updates.kind;
+      if ("color" in updates) data.color = updates.color;
+      if ("members" in updates) data.members = updates.members;
+      if ("coverNumber" in updates)
+        data.coverNumber = updates.coverNumber ?? null;
+      await updateDiaryM.mutateAsync({ id, data: data as never });
+      invalidateDiaries();
     },
-    [mutateDiaries, ensureHydrated]
+    [updateDiaryM, invalidateDiaries]
   );
 
-  const deleteDiary = useCallback(
-    async (id: string) => {
-      ensureHydrated();
-      await mutateDiaries((prev) => prev.filter((x) => x.id !== id));
-      await mutateEntries((prev) => prev.filter((x) => x.diaryId !== id));
+  const deleteDiary: DiariesContextType["deleteDiary"] = useCallback(
+    async (id) => {
+      await deleteDiaryM.mutateAsync({ id });
+      invalidateDiaries();
+      invalidateEntries();
     },
-    [mutateDiaries, mutateEntries, ensureHydrated]
+    [deleteDiaryM, invalidateDiaries, invalidateEntries]
   );
 
-  const toggleFavorite = useCallback(
-    async (id: string) => {
-      ensureHydrated();
-      await mutateDiaries((prev) =>
-        prev.map((x) =>
-          x.id === id
-            ? { ...x, kind: x.kind === "FAVORITE" ? (x.members.length > 1 ? "SHARED" : "SOLO") : "FAVORITE" }
-            : x
-        )
-      );
+  const toggleFavorite: DiariesContextType["toggleFavorite"] = useCallback(
+    async (id) => {
+      const current = diaries.find((d) => d.id === id);
+      if (!current) return;
+      const nextKind: DiaryKind =
+        current.kind === "FAVORITE"
+          ? current.members.length > 1
+            ? "SHARED"
+            : "SOLO"
+          : "FAVORITE";
+      await updateDiary(id, { kind: nextKind });
     },
-    [mutateDiaries, ensureHydrated]
+    [diaries, updateDiary]
   );
 
   const addEntry: DiariesContextType["addEntry"] = useCallback(
     async (entry) => {
-      ensureHydrated();
-      const newEntry: DiaryEntry = {
-        ...entry,
-        id: uid(),
-        createdAt: new Date().toISOString(),
-      };
-      await mutateEntries((prev) => [newEntry, ...prev]);
-      return newEntry;
+      const id = uid();
+      const created = await createEntry.mutateAsync({
+        data: {
+          id,
+          diaryId: entry.diaryId,
+          title: entry.title ?? null,
+          body: entry.body,
+          mood: entry.mood ?? null,
+          photoUri: entry.photoUri ?? null,
+          videoUri: entry.videoUri ?? null,
+          isVideo: !!entry.isVideo,
+          bgColor: entry.bgColor ?? null,
+          paperPattern: entry.paperPattern ?? null,
+          stickers: entry.stickers,
+          texts: entry.texts,
+          photos: entry.photos ?? [],
+        },
+      });
+      invalidateEntries();
+      return toLocalEntry(created as never);
     },
-    [mutateEntries, ensureHydrated]
+    [createEntry, invalidateEntries]
   );
 
-  const updateEntry = useCallback(
-    async (id: string, updates: Partial<DiaryEntry>) => {
-      ensureHydrated();
-      await mutateEntries((prev) => prev.map((x) => (x.id === id ? { ...x, ...updates } : x)));
+  const updateEntry: DiariesContextType["updateEntry"] = useCallback(
+    async (id, updates) => {
+      const data: Record<string, unknown> = {};
+      const u = updates as Record<string, unknown>;
+      const nullableKeys = [
+        "title",
+        "mood",
+        "photoUri",
+        "videoUri",
+        "bgColor",
+        "paperPattern",
+      ] as const;
+      for (const k of nullableKeys) {
+        if (k in u) data[k] = u[k] ?? null;
+      }
+      for (const k of ["body", "isVideo", "stickers", "texts", "photos"] as const) {
+        if (k in u) data[k] = u[k];
+      }
+      await updateEntryM.mutateAsync({ id, data: data as never });
+      invalidateEntries();
     },
-    [mutateEntries, ensureHydrated]
+    [updateEntryM, invalidateEntries]
   );
 
-  const deleteEntry = useCallback(
-    async (id: string) => {
-      ensureHydrated();
-      await mutateEntries((prev) => prev.filter((x) => x.id !== id));
+  const deleteEntry: DiariesContextType["deleteEntry"] = useCallback(
+    async (id) => {
+      await deleteEntryM.mutateAsync({ id });
+      invalidateEntries();
     },
-    [mutateEntries, ensureHydrated]
+    [deleteEntryM, invalidateEntries]
   );
 
-  const getDiary = useCallback((id: string) => diaries.find((d) => d.id === id), [diaries]);
+  const getDiary = useCallback(
+    (id: string) => diaries.find((d) => d.id === id),
+    [diaries]
+  );
   const getEntriesForDiary = useCallback(
     (id: string) =>
       entries

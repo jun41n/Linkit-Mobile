@@ -35,7 +35,7 @@ Tuda-style 다꾸 diary + Setlog vertical video log with sticker store monetizat
 - **Diary types** (`DiaryKind`): SOLO (혼자), SHARED (함께/교환일기), FAVORITE (즐겨)
 - **Decoration canvas**: photos + draggable/pinchable/rotatable emoji stickers + freeform text overlays + pastel page backgrounds. Built with `react-native-gesture-handler` + `react-native-reanimated` (gestures use `runOnJS` to write back to React state).
 - **Sticker store** (`/store`): 6 packs (2 free + 4 paid premium ₩2,900~₩4,900). Purchase flow simulated via `Alert.alert` confirm + AsyncStorage; PRO badges for paid packs.
-- **Persistence**: AsyncStorage keys `@linkit/diaries/v1`, `@linkit/entries/v1`, `@linkit/owned-packs/v1`. Mutations use functional `setState` + ref-based atomic computation + serialized write queue to avoid stale-closure lost-update races, gated on hydration.
+- **Persistence — cloud sync**: Diaries, entries, and owned sticker packs are synced to PostgreSQL via the `@workspace/api-server` Express API, scoped to the Clerk `userId`. Tables use composite primary key `(userId, id)` so client-generated IDs cannot collide across tenants. Frontend uses generated React Query hooks from `@workspace/api-client-react`; `ApiAuthBridge` (in `lib/apiClient.tsx`, mounted in `app/_layout.tsx`) registers the Clerk `getToken()` so all requests carry an Authorization Bearer. Free packs are auto-granted on first load. PATCH payloads only include defined fields to avoid clobbering. Server enforces diary ownership when creating an entry. Sticker catalog (`PACKS`) remains client-side; only ownership is synced.
 - **Key files**:
   - `app/_layout.tsx` — root stack + provider wiring
   - `context/DiariesContext.tsx`, `context/StickersContext.tsx` — state + persistence
@@ -47,3 +47,9 @@ Tuda-style 다꾸 diary + Setlog vertical video log with sticker store monetizat
   - `app/entry/new.tsx` (글/다꾸/배경 toolbar), `app/entry/[id].tsx`
   - `app/store/index.tsx`, `app/store/[id].tsx`
   - `app/notifications.tsx`
+  - `lib/apiClient.tsx` — sets API base URL + Clerk token bridge
+- **Backend** (artifact `api-server`):
+  - `lib/db/src/schema/{diaries,entries,ownedPacks}.ts` — Drizzle schemas, composite PK `(userId, id)`
+  - `lib/api-spec/openapi.yaml` — OpenAPI source of truth for diaries / entries / owned-packs CRUD
+  - `artifacts/api-server/src/middlewares/requireAuth.ts` — Clerk `getAuth()` → `req.userId`
+  - `artifacts/api-server/src/routes/{diaries,entries,ownedPacks}.ts` — user-scoped routes
