@@ -113,6 +113,12 @@ export default function SignInScreen() {
                 </Pressable>
               </Link>
             </View>
+
+            <Link href="/(tabs)" asChild>
+              <Pressable style={styles.guestRow}>
+                <Text style={[styles.guestText, { color: colors.mutedForeground }]}>로그인 없이 둘러보기 →</Text>
+              </Pressable>
+            </Link>
           </View>
         </GlassSurface>
       </ScrollView>
@@ -127,6 +133,8 @@ const styles = StyleSheet.create({
   brand: { alignItems: "center", gap: 6 },
   brandLogo: { width: 240, height: 180 },
   brandTag: { fontFamily: "NotoSansKR_500Medium", fontSize: 14 },
+  guestRow: { alignItems: "center", paddingVertical: 8, marginTop: 4 },
+  guestText: { fontFamily: "NotoSansKR_500Medium", fontSize: 13 },
   card: { marginTop: 8 },
   cardInner: { padding: 22, gap: 8 },
   title: { fontFamily: "NotoSansKR_700Bold", fontSize: 24 },

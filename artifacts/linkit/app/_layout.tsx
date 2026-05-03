@@ -65,6 +65,8 @@ export default function RootLayout() {
     NotoSansKR_400Regular,
     NotoSansKR_500Medium,
     NotoSansKR_700Bold,
+  });
+  useFonts({
     Gaegu_400Regular,
     Gaegu_700Bold,
     NanumPenScript_400Regular,
