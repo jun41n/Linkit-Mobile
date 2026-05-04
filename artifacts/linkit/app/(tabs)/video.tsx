@@ -209,13 +209,23 @@ export default function VideoLogScreen() {
         )}
 
         <Pressable
-          onPress={() => router.push({ pathname: "/entry/new", params: { mode: "video" } })}
+          onPress={() => router.push("/video/record")}
           style={[styles.inviteCard, { backgroundColor: colors.card, borderColor: colors.border }]}
         >
           <View style={[styles.invitePlus, { borderColor: colors.border }]}>
             <Ionicons name="videocam" size={22} color={colors.foreground} />
           </View>
           <Text style={[styles.inviteText, { color: colors.foreground }]}>세로 영상 찍기</Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => router.push("/video/record")}
+          style={[styles.inviteCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+        >
+          <View style={[styles.invitePlus, { borderColor: colors.border }]}>
+            <Ionicons name="cloud-upload-outline" size={22} color={colors.foreground} />
+          </View>
+          <Text style={[styles.inviteText, { color: colors.foreground }]}>영상 업로드</Text>
         </Pressable>
 
         <Pressable style={[styles.inviteCard, { backgroundColor: colors.card, borderColor: colors.border }]}>

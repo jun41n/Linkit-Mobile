@@ -47,6 +47,8 @@ function RootLayoutNav() {
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="diary/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="diary/new" options={{ presentation: "modal", title: "새 다이어리 만들기" }} />
+      <Stack.Screen name="video/record" options={{ headerShown: false, presentation: "fullScreenModal" }} />
+      <Stack.Screen name="video/review" options={{ headerShown: false, presentation: "modal" }} />
       <Stack.Screen name="entry/new" options={{ headerShown: false, presentation: "modal" }} />
       <Stack.Screen name="entry/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="store/index" options={{ title: "스티커 스토어" }} />

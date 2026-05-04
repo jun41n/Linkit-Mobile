@@ -67,6 +67,8 @@
     "@expo-google-fonts/noto-sans-kr": "^0.4.3",
     "@expo-google-fonts/single-day": "^0.4.1",
     "expo-auth-session": "~7.0.11",
+    "expo-av": "^16.0.8",
+    "expo-camera": "^55.0.16",
     "expo-crypto": "~15.0.9",
     "expo-secure-store": "~15.0.8"
   }
